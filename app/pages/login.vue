@@ -20,6 +20,10 @@
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 
+definePageMeta({
+  layout: false,
+})
+
 const toast = useToast();
 
 const fields: AuthFormField[] = [
