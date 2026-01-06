@@ -1,4 +1,7 @@
 <template>
+  <div>
+    <ThemeToggle class="fixed top-4 right-4 z-50" />
+  </div>
   <div class="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
     <UPageCard class="w-full max-w-md">
       <UAuthForm
