@@ -15,4 +15,28 @@
   --color-green-800: #016538;
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
+
+  /* monochrome colors */
+  --color-monoc-50: #fafafa;
+  --color-monoc-100: #f5f5f5;
+  --color-monoc-200: #e5e5e5;
+  --color-monoc-300: #d4d4d4;
+  --color-monoc-400: #a3a3a3;
+  --color-monoc-500: #737373;
+  --color-monoc-600: #525252;
+  --color-monoc-700: #404040;
+  --color-monoc-800: #262626;
+  --color-monoc-900: #171717;
+  --color-monoc-950: #000000;
+  
+}
+
+:root {
+  --ui-primary: black;
+  --ui-bg: white;
+}
+
+.dark {
+  --ui-primary: white;
+  --ui-bg: black;
 }
