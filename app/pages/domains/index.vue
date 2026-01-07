@@ -1,7 +1,6 @@
 <template>
   <div class="p-2 sm:p-4 lg:p-6">
-    <h2 class="text-xl sm:text-2xl lg:text-3xl mb-4">Domains</h2>
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+    <div class="grid grid-cols-1 gap-6">
       <UContainer>
         <DomainsCard :domains-list="domainsList" />
       </UContainer>
@@ -13,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { DomainList } from '~/types/domain'
+import type { DomainList } from "~/types/domain";
 
 const domainsList: DomainList = [
   { name: "Domain 1", value: "domain1.com", color: "#FF5733" },
@@ -35,10 +34,8 @@ const domainsList: DomainList = [
   { name: "Domain 17", value: "domain17.com", color: "#33CCFF" },
   { name: "Domain 18", value: "domain18.com", color: "#FF6633" },
   { name: "Domain 19", value: "domain19.com", color: "#66FF33" },
-  { name: "Domain 20", value: "domain20.com", color: "#3366FF" }
-]
+  { name: "Domain 20", value: "domain20.com", color: "#3366FF" },
+];
 </script>
 
-<style>
-
-</style>
+<style></style>

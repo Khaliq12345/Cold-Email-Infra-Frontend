@@ -1,10 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ["@nuxt/ui", "nuxt-charts"],
-  typescript: {
-    typeCheck: true,
-  },
-
   devtools: {
     enabled: true,
   },
@@ -12,7 +8,7 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   colorMode: {
-    preference: 'system'
+    preference: "system",
   },
 
   routeRules: {

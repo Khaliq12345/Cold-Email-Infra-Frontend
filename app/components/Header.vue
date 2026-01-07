@@ -1,20 +1,55 @@
 <template>
-  <UHeader :toggle="false">
-    <template #left>
-      <div class="flex items-center gap-1 sm:gap-2">
-        <h2 class="text-sm sm:text-lg font-bold">Enterprise</h2>
-        <span class="text-gray-400 hidden sm:inline">/</span>
-        <Navigation />
-      </div>
+  <UHeader
+    :toggle="{
+      color: 'primary',
+      variant: 'subtle',
+      class: 'rounded-full',
+    }"
+  >
+    <template #title>
+      <div>EXISTANTLY</div>
     </template>
+
+    <UNavigationMenu :items="items" />
+
     <template #right>
-      <ThemeToggle />
-      <UButton variant="ghost" size="sm" icon="i-lucide-headphones">
-        <span class="hidden sm:inline ml-1">Support</span>
-      </UButton>
-      <UAvatar text="U" size="sm" />
+      <UColorModeButton />
+
+      <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          to="https://github.com/nuxt/ui"
+          target="_blank"
+          icon="i-simple-icons-github"
+          aria-label="GitHub"
+        />
+      </UTooltip>
+    </template>
+
+    <template #body>
+      <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
     </template>
   </UHeader>
 </template>
+
 <script setup lang="ts">
+import type { NavigationMenuItem } from "@nuxt/ui";
+
+const route = useRoute();
+
+const items = computed<NavigationMenuItem[]>(() => [
+  {
+    label: "Domains",
+    to: "/domains",
+    icon: "i-lucide-book-open",
+    active: route.path.startsWith("/domains"),
+  },
+  {
+    label: "Settings",
+    to: "/settings",
+    icon: "i-lucide-box",
+    active: route.path.startsWith("/settings"),
+  },
+]);
 </script>

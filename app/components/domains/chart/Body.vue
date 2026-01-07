@@ -4,24 +4,40 @@
     <div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mb-4">
       <!-- date range -->
       <UDropdownMenu :items="[rangechoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
-          {{  currentrange}}
+        <UButton
+          variant="ghost"
+          trailing-icon="i-lucide-chevron-down"
+          size="sm"
+        >
+          {{ currentrange }}
         </UButton>
       </UDropdownMenu>
+
       <UDropdownMenu :items="[domainchoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
-          {{  currentdomain}}
+        <UButton
+          variant="ghost"
+          trailing-icon="i-lucide-chevron-down"
+          size="sm"
+        >
+          {{ currentdomain }}
         </UButton>
       </UDropdownMenu>
     </div>
+
     <!-- mini h-list div -->
     <div class="w-full flex gap-2 overflow-hidden mb-4">
-        <div class="flex gap-2 text-nowrap overflow-x-scroll">
-          <div v-for="domain in domainsList" class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-            <p class="w-3 h-3 sm:w-4 sm:h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
-            <p class="text-xs sm:text-sm">{{ domain.name }}</p>
-          </div>
+      <div class="flex gap-2 text-nowrap overflow-x-scroll">
+        <div
+          v-for="domain in domainsList"
+          class="flex items-center gap-1 sm:gap-2 flex-shrink-0"
+        >
+          <p
+            class="w-3 h-3 sm:w-4 sm:h-1 rounded"
+            :style="{ backgroundColor: domain.color }"
+          ></p>
+          <p class="text-xs sm:text-sm">{{ domain.name }}</p>
         </div>
+      </div>
     </div>
     <!-- chart div -->
     <div class="p-1 sm:p-2">
@@ -29,50 +45,62 @@
         :data="data"
         :categories="categories"
         category-axis="date"
-        :colors="domainsList.map(domain => domain.color)"
+        :colors="domainsList.map((domain) => domain.color)"
         :height="250"
         :y-step="50"
         :smooth="true"
         :show-tooltips="true"
         class="w-full"
-        />
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import type { DomainList } from '~/types/domain'
+import type { DomainList } from "~/types/domain";
 
 const props = defineProps<{
-  domainsList: DomainList
-}>()
+  domainsList: DomainList;
+}>();
 
-const currentrange = ref("Last 7 days")
+const currentrange = ref("Last 7 days");
 const rangechoice = [
-  { label: "Last 7 days", onSelect: () => currentrange.value = "Last 7 days"  },
-  { label: "Last 30 days", onSelect: () => currentrange.value = "Last 30 days"  },
-  { label: "Last 90 days", onSelect: () => currentrange.value = "Last 90 days"  },
-]
+  {
+    label: "Last 7 days",
+    onSelect: () => (currentrange.value = "Last 7 days"),
+  },
+  {
+    label: "Last 30 days",
+    onSelect: () => (currentrange.value = "Last 30 days"),
+  },
+  {
+    label: "Last 90 days",
+    onSelect: () => (currentrange.value = "Last 90 days"),
+  },
+];
 
-const currentdomain = ref("All Domains")
+const currentdomain = ref("All Domains");
 const domainchoice = [
-  { label: "All Domains", onSelect: () => currentdomain.value = "All Domains"  },
-  { label: "Domain 1", onSelect: () => currentdomain.value = "Domain 1"  },
-  { label: "Domain 2", onSelect: () => currentdomain.value = "Domain 2"  },
-]
+  {
+    label: "All Domains",
+    onSelect: () => (currentdomain.value = "All Domains"),
+  },
+  { label: "Domain 1", onSelect: () => (currentdomain.value = "Domain 1") },
+  { label: "Domain 2", onSelect: () => (currentdomain.value = "Domain 2") },
+];
 
-const categories = computed(() => 
+const categories = computed(() =>
   Object.fromEntries(
-    props.domainsList.map(d => [
-      d.value.split('.')[0],
-      { name: d.name, color: d.color }
-    ])
-  )
-)
+    props.domainsList.map((d) => [
+      d.value.split(".")[0],
+      { name: d.name, color: d.color },
+    ]),
+  ),
+);
 
 const data = ref([
   {
-    date: '2024-04-01',
+    date: "2024-04-01",
     domain1: 75,
     domain2: 55,
     domain3: 90,
@@ -95,7 +123,7 @@ const data = ref([
     domain20: 99,
   },
   {
-    date: '2024-04-02',
+    date: "2024-04-02",
     domain1: 125,
     domain2: 95,
     domain3: 130,
@@ -118,7 +146,7 @@ const data = ref([
     domain20: 149,
   },
   {
-    date: '2024-04-03',
+    date: "2024-04-03",
     domain1: 167,
     domain2: 140,
     domain3: 160,
@@ -141,7 +169,7 @@ const data = ref([
     domain20: 189,
   },
   {
-    date: '2024-04-04',
+    date: "2024-04-04",
     domain1: 260,
     domain2: 200,
     domain3: 220,
@@ -164,7 +192,7 @@ const data = ref([
     domain20: 249,
   },
   {
-    date: '2024-04-05',
+    date: "2024-04-05",
     domain1: 240,
     domain2: 210,
     domain3: 260,
@@ -186,10 +214,7 @@ const data = ref([
     domain19: 218,
     domain20: 269,
   },
-])
-
+]);
 </script>
 
-<style>
-
-</style>
+<style></style>
