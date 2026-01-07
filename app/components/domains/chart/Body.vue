@@ -17,7 +17,7 @@
     <!-- mini h-list div -->
     <div class="w-full flex gap-2 overflow-hidden">
         <div class="flex gap-2 text-nowrap overflow-x-scroll">
-          <div v-for="domain in domainslist" class="flex items-center gap-2">
+          <div v-for="domain in domainsList" class="flex items-center gap-2">
             <p class="w-4 h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
             <p>{{ domain.name }}</p>
           </div>
@@ -29,7 +29,7 @@
         :data="data"
         :categories="categories"
         category-axis="date"
-        :colors="domainslist.map(domain => domain.color)"
+        :colors="domainsList.map(domain => domain.color)"
         :height="300"
         :y-step="50"
         :smooth="true"
@@ -40,7 +40,11 @@
 </template>
 
 <script lang="ts" setup>
+import type { DomainList } from '~/types/domain'
 
+const props = defineProps<{
+  domainsList: DomainList
+}>()
 
 const currentrange = ref("Last 7 days")
 const rangechoice = [
@@ -55,33 +59,11 @@ const domainchoice = [
   { label: "Domain 1", onSelect: () => currentdomain.value = "Domain 1"  },
   { label: "Domain 2", onSelect: () => currentdomain.value = "Domain 2"  },
 ]
-const domainslist = ref([
-  { name: "Domain 1", value: "domain1.com", color: "#FF5733" },
-  { name: "Domain 2", value: "domain2.com", color: "#33FF57" },
-  { name: "Domain 3", value: "domain3.com", color: "#3357FF" },
-  { name: "Domain 4", value: "domain4.com", color: "#FF33A8" },
-  { name: "Domain 5", value: "domain5.com", color: "#A833FF" },
-  { name: "Domain 6", value: "domain6.com", color: "#33FFF3" },
-  { name: "Domain 7", value: "domain7.com", color: "#FF8F33" },
-  { name: "Domain 8", value: "domain8.com", color: "#8FFF33" },
-  { name: "Domain 9", value: "domain9.com", color: "#338FFF" },
-  { name: "Domain 10", value: "domain10.com", color: "#FF3333" },
-  { name: "Domain 11", value: "domain11.com", color: "#33FF99" },
-  { name: "Domain 12", value: "domain12.com", color: "#9933FF" },
-  { name: "Domain 13", value: "domain13.com", color: "#FF3399" },
-  { name: "Domain 14", value: "domain14.com", color: "#33FFCC" },
-  { name: "Domain 15", value: "domain15.com", color: "#FFCC33" },
-  { name: "Domain 16", value: "domain16.com", color: "#CCFF33" },
-  { name: "Domain 17", value: "domain17.com", color: "#33CCFF" },
-  { name: "Domain 18", value: "domain18.com", color: "#FF6633" },
-  { name: "Domain 19", value: "domain19.com", color: "#66FF33" },
-  { name: "Domain 20", value: "domain20.com", color: "#3366FF" }
-])
 
 const categories = computed(() => 
   Object.fromEntries(
-    domainslist.value.map(d => [
-      d.value.split('.')[0], // key comme domain1, domain2 ...
+    props.domainsList.map(d => [
+      d.value.split('.')[0],
       { name: d.name, color: d.color }
     ])
   )
