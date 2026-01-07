@@ -4,10 +4,10 @@ export default defineAppConfig({
       primary: 'green',
       neutral: 'slate'
     },
-    avatar: {
+    authForm: {
       slots: {
-        root: 'bg-monoc-300 dark:bg-monoc-900 text-center',
-        fallback: 'text-center text-black dark:text-white'
+        root: 'space-y-2',
+        body: 'bg-monoc-100 dark:bg-monoc-900 p-4 rounded',
       }
     }
   }

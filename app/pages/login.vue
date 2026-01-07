@@ -2,17 +2,22 @@
   <div>
     <ThemeToggle class="fixed top-4 right-4 z-50" />
   </div>
-  <div class="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
-    <UPageCard class="w-full max-w-md">
+  <div class="flex min-h-screen flex-col items-center justify-center gap-1 p-2">
+    <div class="text-center space-y-2">
+      <h1 class="text-4xl">Enterprise</h1>
+      <h2 class="text-sm">Login to your account</h2>
+    </div>
+    <UPageCard class="w-full max-w-md ring-0">
       <UAuthForm
         :schema="schema"
-        title="Login"
-        description="Enter your credentials to access your account."
-        icon="i-lucide-user"
         :fields="fields"
         @submit="onSubmit"
       />
     </UPageCard>
+  </div>
+  <!-- termis & service -->
+  <div class="fixed bottom-0 left-0 w-full text-xs text-center text-monoc-300 p-4">
+    <p>Terms of service and privacy policy</p>
   </div>
 </template>
 
