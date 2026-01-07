@@ -1,15 +1,7 @@
 <!-- components/InboxManager.vue -->
 <template>
-  <!-- Header -->
-  <div class="flex items-center justify-between p-2">
-    <h2 class="text-lg font-semibold">Inboxes</h2>
-    <div class="flex gap-2">
-      <UButton variant="outline" size="sm">Export</UButton>
-      <UButton color="primary" size="sm" icon="i-lucide-plus"
-        >Create Inbox</UButton
-      >
-    </div>
-  </div>
+  <DomainsDetailListHeader></DomainsDetailListHeader>
+
   <div class="border border-monoc-500 rounded-lg shadow-sm">
     <!-- Select all -->
     <div
@@ -69,7 +61,7 @@ const filteredInboxes = computed(() => {
   return inboxes.value.filter(
     (inbox) =>
       inbox.email.toLowerCase().includes(query) ||
-      inbox.name.toLowerCase().includes(query)
+      inbox.name.toLowerCase().includes(query),
   );
 });
 
