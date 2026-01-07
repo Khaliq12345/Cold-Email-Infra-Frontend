@@ -1,12 +1,14 @@
 <template>
-  <div class="p-2">
-    <h2>Domains</h2>
-    <UContainer>
-      <DomainsCard :domains-list="domainsList" />
-    </UContainer>
-    <UContainer class="mt-4">
-      <DomainsList :domains-list="domainsList" />
-    </UContainer>
+  <div class="p-2 sm:p-4 lg:p-6">
+    <h2 class="text-xl sm:text-2xl lg:text-3xl mb-4">Domains</h2>
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+      <UContainer>
+        <DomainsCard :domains-list="domainsList" />
+      </UContainer>
+      <UContainer>
+        <DomainsList :domains-list="domainsList" />
+      </UContainer>
+    </div>
   </div>
 </template>
 

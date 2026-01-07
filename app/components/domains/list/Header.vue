@@ -1,12 +1,12 @@
 <template>
-  <div class="w-full flex items-center justify-between">
-    <h2 class="text-xl font-bold">Domains</h2>
-    <div class="flex gap-2 items-center">
-      <p>
+  <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+    <h2 class="text-lg sm:text-xl font-bold">Domains</h2>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-2 items-start sm:items-center">
+      <p class="text-sm">
         0 domains avalaible
-        <a href="#">add more</a>
+        <a href="#" class="text-primary hover:underline">add more</a>
       </p>
-      <UButton>Purchase subscription</UButton>
+      <UButton size="sm">Purchase subscription</UButton>
     </div>
   </div>
 </template>

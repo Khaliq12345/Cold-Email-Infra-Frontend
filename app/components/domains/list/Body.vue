@@ -3,19 +3,38 @@
     <div
       v-for="domain in domainsList"
       :key="domain.value"
-      class="grid grid-cols-3 items-center gap-1 p-2 rounded-2xl"
+      class="p-3 sm:p-2 rounded-2xl"
     >
-      <div class="flex gap-2 items-center">
-        <div
-          class="w-8 h-8 rounded"
-          :style="{ backgroundColor: domain.color }"
-        ></div>
-        <p class="font-medium">{{ domain.name }}</p>
-        <p v-if="Math.random() > 0.7" class="px-1 py-0.5 text-xs bg-red-500 rounded ">Expired</p>
+      <!-- Mobile layout -->
+      <div class="sm:hidden">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex gap-2 items-center">
+            <div
+              class="w-6 h-6 rounded flex-shrink-0"
+              :style="{ backgroundColor: domain.color }"
+            ></div>
+            <p class="font-medium text-sm truncate">{{ domain.name }}</p>
+            <p v-if="Math.random() > 0.7" class="px-1 py-0.5 text-xs bg-red-500 text-white rounded flex-shrink-0">Expired</p>
+          </div>
+          <UIcon name="i-lucide-ellipsis-vertical" class="w-5 h-5" />
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">100/100 inboxes</p>
       </div>
-      <p class="justify-self-center">100/100 inboxes</p>
-      <div class="justify-self-end">
-        <UIcon name="i-lucide-ellipsis-vertical" />
+      
+      <!-- Desktop layout -->
+      <div class="hidden sm:grid sm:grid-cols-3 sm:items-center sm:gap-1">
+        <div class="flex gap-2 items-center">
+          <div
+            class="w-8 h-8 rounded flex-shrink-0"
+            :style="{ backgroundColor: domain.color }"
+          ></div>
+          <p class="font-medium text-base truncate">{{ domain.name }}</p>
+          <p v-if="Math.random() > 0.7" class="px-1 py-0.5 text-xs bg-red-500 text-white rounded flex-shrink-0">Expired</p>
+        </div>
+        <p class="text-base text-gray-600 dark:text-gray-400 justify-self-center">100/100 inboxes</p>
+        <div class="justify-self-end">
+          <UIcon name="i-lucide-ellipsis-vertical" class="w-5 h-5" />
+        </div>
       </div>
     </div>
   </UPageList>

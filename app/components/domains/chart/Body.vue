@@ -1,39 +1,40 @@
 <template>
   <div class="w-full">
     <!-- dropdowns div -->
-    <div class="flex justify-between">
+    <div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mb-4">
       <!-- date range -->
       <UDropdownMenu :items="[rangechoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
+        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
           {{  currentrange}}
         </UButton>
       </UDropdownMenu>
       <UDropdownMenu :items="[domainchoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
+        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
           {{  currentdomain}}
         </UButton>
       </UDropdownMenu>
     </div>
     <!-- mini h-list div -->
-    <div class="w-full flex gap-2 overflow-hidden">
+    <div class="w-full flex gap-2 overflow-hidden mb-4">
         <div class="flex gap-2 text-nowrap overflow-x-scroll">
-          <div v-for="domain in domainsList" class="flex items-center gap-2">
-            <p class="w-4 h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
-            <p>{{ domain.name }}</p>
+          <div v-for="domain in domainsList" class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <p class="w-3 h-3 sm:w-4 sm:h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
+            <p class="text-xs sm:text-sm">{{ domain.name }}</p>
           </div>
         </div>
     </div>
     <!-- chart div -->
-    <div class="p-2">
+    <div class="p-1 sm:p-2">
       <AreaChart
         :data="data"
         :categories="categories"
         category-axis="date"
         :colors="domainsList.map(domain => domain.color)"
-        :height="300"
+        :height="250"
         :y-step="50"
         :smooth="true"
         :show-tooltips="true"
+        class="w-full"
         />
     </div>
   </div>

@@ -1,14 +1,16 @@
 <template>
-  <div class="flex items-center text-sm">
+  <div class="flex items-center text-xs sm:text-sm gap-1">
     <UDropdownMenu :items="sections">
-      <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
-        {{ currentSection }}
+      <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="xs" class="text-xs sm:text-sm">
+        <span class="hidden sm:inline">{{ currentSection }}</span>
+        <span class="sm:hidden">{{ currentSection.slice(0, 3) }}</span>
       </UButton>
     </UDropdownMenu>
-    <p>/</p>
+    <span class="text-gray-400">/</span>
     <UDropdownMenu :items="subsections">
-      <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
-        {{ currentSubsection }}
+      <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="xs" class="text-xs sm:text-sm">
+        <span class="hidden sm:inline">{{ currentSubsection }}</span>
+        <span class="sm:hidden">{{ currentSubsection.slice(0, 3) }}</span>
       </UButton>
     </UDropdownMenu>
   </div>
