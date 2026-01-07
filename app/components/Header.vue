@@ -1,16 +1,18 @@
 <template>
-  <UHeader>
+  <UHeader :toggle="false">
     <template #left>
-      <div class="flex items-center gap-2">
-        <h2 class="font-bold">Cold Email Infra</h2>
-        <p>/</p>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <h2 class="text-sm sm:text-lg font-bold">Enterprise</h2>
+        <span class="text-gray-400 hidden sm:inline">/</span>
         <Navigation />
       </div>
     </template>
     <template #right>
       <ThemeToggle />
-      <button class="text-sm text-black dark:text-white rounded px-2 py-1">Support</button>
-      <UAvatar text="U" />
+      <UButton variant="ghost" size="sm" icon="i-lucide-headphones">
+        <span class="hidden sm:inline ml-1">Support</span>
+      </UButton>
+      <UAvatar text="U" size="sm" />
     </template>
   </UHeader>
 </template>

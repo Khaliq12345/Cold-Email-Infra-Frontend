@@ -1,46 +1,51 @@
 <template>
   <div class="w-full">
     <!-- dropdowns div -->
-    <div class="flex justify-between">
+    <div class="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mb-4">
       <!-- date range -->
       <UDropdownMenu :items="[rangechoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
+        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
           {{  currentrange}}
         </UButton>
       </UDropdownMenu>
       <UDropdownMenu :items="[domainchoice]">
-        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down">
+        <UButton variant="ghost" trailing-icon="i-lucide-chevron-down" size="sm">
           {{  currentdomain}}
         </UButton>
       </UDropdownMenu>
     </div>
     <!-- mini h-list div -->
-    <div class="w-full flex gap-2 overflow-hidden">
+    <div class="w-full flex gap-2 overflow-hidden mb-4">
         <div class="flex gap-2 text-nowrap overflow-x-scroll">
-          <div v-for="domain in domainslist" class="flex items-center gap-2">
-            <p class="w-4 h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
-            <p>{{ domain.name }}</p>
+          <div v-for="domain in domainsList" class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <p class="w-3 h-3 sm:w-4 sm:h-1 rounded" :style="{ backgroundColor: domain.color }"></p>
+            <p class="text-xs sm:text-sm">{{ domain.name }}</p>
           </div>
         </div>
     </div>
     <!-- chart div -->
-    <div class="p-2">
+    <div class="p-1 sm:p-2">
       <AreaChart
         :data="data"
         :categories="categories"
         category-axis="date"
-        :colors="domainslist.map(domain => domain.color)"
-        :height="300"
+        :colors="domainsList.map(domain => domain.color)"
+        :height="250"
         :y-step="50"
         :smooth="true"
         :show-tooltips="true"
+        class="w-full"
         />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import type { DomainList } from '~/types/domain'
 
+const props = defineProps<{
+  domainsList: DomainList
+}>()
 
 const currentrange = ref("Last 7 days")
 const rangechoice = [
@@ -55,33 +60,11 @@ const domainchoice = [
   { label: "Domain 1", onSelect: () => currentdomain.value = "Domain 1"  },
   { label: "Domain 2", onSelect: () => currentdomain.value = "Domain 2"  },
 ]
-const domainslist = ref([
-  { name: "Domain 1", value: "domain1.com", color: "#FF5733" },
-  { name: "Domain 2", value: "domain2.com", color: "#33FF57" },
-  { name: "Domain 3", value: "domain3.com", color: "#3357FF" },
-  { name: "Domain 4", value: "domain4.com", color: "#FF33A8" },
-  { name: "Domain 5", value: "domain5.com", color: "#A833FF" },
-  { name: "Domain 6", value: "domain6.com", color: "#33FFF3" },
-  { name: "Domain 7", value: "domain7.com", color: "#FF8F33" },
-  { name: "Domain 8", value: "domain8.com", color: "#8FFF33" },
-  { name: "Domain 9", value: "domain9.com", color: "#338FFF" },
-  { name: "Domain 10", value: "domain10.com", color: "#FF3333" },
-  { name: "Domain 11", value: "domain11.com", color: "#33FF99" },
-  { name: "Domain 12", value: "domain12.com", color: "#9933FF" },
-  { name: "Domain 13", value: "domain13.com", color: "#FF3399" },
-  { name: "Domain 14", value: "domain14.com", color: "#33FFCC" },
-  { name: "Domain 15", value: "domain15.com", color: "#FFCC33" },
-  { name: "Domain 16", value: "domain16.com", color: "#CCFF33" },
-  { name: "Domain 17", value: "domain17.com", color: "#33CCFF" },
-  { name: "Domain 18", value: "domain18.com", color: "#FF6633" },
-  { name: "Domain 19", value: "domain19.com", color: "#66FF33" },
-  { name: "Domain 20", value: "domain20.com", color: "#3366FF" }
-])
 
 const categories = computed(() => 
   Object.fromEntries(
-    domainslist.value.map(d => [
-      d.value.split('.')[0], // key comme domain1, domain2 ...
+    props.domainsList.map(d => [
+      d.value.split('.')[0],
       { name: d.name, color: d.color }
     ])
   )

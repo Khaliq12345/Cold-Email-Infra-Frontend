@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full flex items-center justify-between gap-2">
+  <div class="w-full flex flex-col md:flex-row items-center justify-between gap-2">
     <!-- left -->
     <div>
-      <h3 class="text-2xl font-bold">All domains - Default</h3>
+      <h3 class="lg:text-2xl font-bold text-nowrap">All domains - Default</h3>
       <p class="text-monoc-400">Date range - End range</p>
     </div>
     <!-- right -->
