@@ -3,8 +3,6 @@
     <div class="grid grid-cols-1 gap-6">
       <UContainer>
         <DomainsCard :domains-list="domainsList" />
-      </UContainer>
-      <UContainer>
         <DomainsList :domains-list="domainsList" />
       </UContainer>
     </div>
