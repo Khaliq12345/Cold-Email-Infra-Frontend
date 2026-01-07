@@ -14,12 +14,12 @@
   </div>
 </template>
 <script setup lang="ts">
-const currentSection = ref("Dashboard");
-const currentSubsection = ref("Overview");
+const currentSection = ref("Domains");
+const currentSubsection = ref("All");
 
 const sections = [
   [
-    { label: "Dashboard", onSelect: () => setSection("Dashboard") },
+    { label: "Domains", onSelect: () => setSection("Domains") },
     { label: "Campaigns", onSelect: () => setSection("Campaigns") },
     { label: "Analytics", onSelect: () => setSection("Analytics") },
     { label: "Settings", onSelect: () => setSection("Settings") },
@@ -27,10 +27,11 @@ const sections = [
 ];
 
 const subsectionMap = {
-  Dashboard: [
-    { label: "Overview", onSelect: () => setSubsection("Overview") },
-    { label: "Reports", onSelect: () => setSubsection("Reports") },
-    { label: "Settings", onSelect: () => setSubsection("Settings") },
+  Domains: [
+    { label: "All", onSelect: () => setSubsection("All") },
+    { label: "Domain 1", onSelect: () => setSubsection("Domain 1") },
+    { label: "Domain 2", onSelect: () => setSubsection("Domain 2") },
+    { label: "Domain 3", onSelect: () => setSubsection("Domain 3") },
   ],
   Campaigns: [
     { label: "Active", onSelect: () => setSubsection("Active") },
@@ -58,10 +59,18 @@ function setSection(section: string) {
   const sectionData = subsectionMap[section as keyof typeof subsectionMap];
   if (sectionData && sectionData[0]) {
     currentSubsection.value = sectionData[0].label;
+    navigateTo(`/${section.toLowerCase()}`);
   }
 }
 
 function setSubsection(subsection: string) {
   currentSubsection.value = subsection;
+  const router = useRouter()
+  if(subsection === "All") {
+    router.push(`/${currentSection.value.toLowerCase()}`);
+  } else {
+    router.push(`/${currentSection.value.toLowerCase()}/${subsection.toLowerCase()}`);
+  }
+
 }
 </script>
