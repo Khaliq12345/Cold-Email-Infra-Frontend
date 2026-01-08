@@ -1,32 +1,37 @@
 <template>
-  <div class="mx-4 w-full p-2 text-sm space-y-4">
+  <div class="w-full px-1 text-sm space-y-4">
     <!-- Not available -->
-    <div class="p-2 flex gap-2 items-center ring ring-orange-400 rounded-lg">
-      <UIcon name="i-lucide-triangle-alert" :size="40"/>
+    <div
+      class="p-2 flex gap-2 items-center ring ring-orange-400 rounded-lg mb-5"
+    >
+      <UIcon name="i-lucide-triangle-alert" :size="40" />
       <div>
         <h3><strong>Exemple.com</strong> is not available</h3>
         <p>Exemple.com connot be registered yet.</p>
       </div>
     </div>
     <!-- Text -->
-     <div>
+    <div>
       <h2>Suggested domain names.</h2>
       <p>The following is a list of suggestions that may be available</p>
-     </div>
-     <!-- List -->
-      <div class="flex flex-col gap-2">
-        <div v-for="domain in suggestedDomains" class="p-2 flex items-center justify-between border-b border-b-monoc-500 last:border-b-0">
-          <p>{{ domain.name }}</p>
-          <div class="flex items-center gap-1">
-            <div class="text-right">
-              <p>${{ domain.prices }}</p>
-              <p class="text-xs text-left">Renews at ${{ domain.prices }}</p>
-            </div>
-            <!-- <UButton variant="outline">Confirm</UButton> -->
-             <DomainsRegisterDrawer />
+    </div>
+    <!-- List -->
+    <div class="flex flex-col gap-2">
+      <div
+        v-for="domain in suggestedDomains"
+        class="p-2 flex items-center justify-between border-b border-b-monoc-500 last:border-b-0"
+      >
+        <p>{{ domain.name }}</p>
+        <div class="flex items-center gap-1">
+          <div class="text-right">
+            <p>${{ domain.prices }}</p>
+            <p class="text-xs text-left">Renews at ${{ domain.prices }}</p>
           </div>
+          <!-- <UButton variant="outline">Confirm</UButton> -->
+          <DomainsRegisterDrawer />
         </div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -52,9 +57,6 @@ const suggestedDomains = ref<SuggestedDomain[]>([
   { name: "example.site", available: false, prices: 4.99 },
   { name: "example.fr", available: true, prices: 8.99 },
 ]);
-
 </script>
 
-<style>
-
-</style>
+<style></style>

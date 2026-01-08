@@ -1,16 +1,18 @@
 <template>
-  <div class="md:max-w-4xl space-y-2">
-    <p class="text-sm text-left">Search for a new domain.</p>
+  <div>
+    <p class="text-sm text-center mb-4">Search for a new domain.</p>
     <UForm
       :schema="schema"
       :state="state"
-      class="flex items-center gap-2"
+      class="flex gap-2 w-full max-w-2xl"
       @submit="onSubmit"
     >
-      <UInput v-model="state.name" class="flex-1 min-w-0" />
+      <UInput v-model="state.name" class="flex-1" />
       <UButton type="submit">Submit</UButton>
     </UForm>
-    <p class="text-sm text-left text-wrap max-w-xs">Review domain registration documentation and supported TLD's.</p>
+    <p class="text-sm text-center text-wrap max-w-xs mt-4">
+      Review domain registration documentation and supported TLD's.
+    </p>
   </div>
 </template>
 

@@ -1,13 +1,19 @@
 <template>
-  <UContainer class="p-2 sm:p-4 lg:p-6 space-y-4">
+  <UContainer
+    class="md:max-w-3xl lg:max-w-4xl md:mx-auto p-2 sm:p-4 lg:p-6 space-y-4 flex flex-col"
+  >
     <DomainsRegisterHeader />
-    <div class="flex justify-center">
-      <DomainsRegisterForm />
-    </div>
   </UContainer>
-  <UContainer class="p-4 sm:p-6 lg:p-8">
+
+  <div>
+    <DomainsRegisterForm
+      class="w-full flex flex-col items-center justify-center p-8"
+    />
+  </div>
+
+  <div class="mt-10 sm:p-6 lg:p-8 md:max-w-3xl lg:max-w-4xl md:mx-auto">
     <DomainsRegisterResult />
-  </UContainer>
+  </div>
 </template>
 
 <script lang="ts" setup></script>

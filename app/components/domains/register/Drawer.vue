@@ -1,11 +1,17 @@
 <template>
   <div class="p-2">
-    <UDrawer direction="right" :handle="false" :ui="{content: 'w-screen h-screen md:max-w-md'}">
+    <UDrawer
+      direction="right"
+      :handle="false"
+      :ui="{ content: 'w-screen h-screen md:max-w-md' }"
+      description="Fill the following for the checkout"
+      title="Checkout form"
+    >
       <UButton label="Confirm" color="neutral" variant="outline" />
 
       <template #content>
         <!-- <Placeholder class="min-w-96 min-h-96 size-full m-4" /> -->
-        <div class="h-full">
+        <div class="h-full w-full">
           <UAuthForm
             :schema="schema"
             :fields="fields"
