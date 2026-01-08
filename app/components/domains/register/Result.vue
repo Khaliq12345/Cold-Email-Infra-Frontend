@@ -1,7 +1,7 @@
 <template>
   <div class="mx-4 w-full p-2 text-sm space-y-4">
     <!-- Not available -->
-    <div class="p-2   flex gap-2 items-center ring ring-orange-400 rounded-lg">
+    <div class="p-2 flex gap-2 items-center ring ring-orange-400 rounded-lg">
       <UIcon name="i-lucide-triangle-alert" :size="40"/>
       <div>
         <h3><strong>Exemple.com</strong> is not available</h3>
@@ -17,12 +17,13 @@
       <div class="flex flex-col gap-2">
         <div v-for="domain in suggestedDomains" class="p-2 flex items-center justify-between border-b border-b-monoc-500 last:border-b-0">
           <p>{{ domain.name }}</p>
-          <div class="grid gap-2 grid-cols-2">
+          <div class="flex items-center gap-1">
             <div class="text-right">
               <p>${{ domain.prices }}</p>
               <p class="text-xs text-left">Renews at ${{ domain.prices }}</p>
             </div>
-            <UButton variant="outline">Confirm</UButton>
+            <!-- <UButton variant="outline">Confirm</UButton> -->
+             <DomainsRegisterDrawer />
           </div>
         </div>
       </div>

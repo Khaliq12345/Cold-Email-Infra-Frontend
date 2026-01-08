@@ -1,11 +1,11 @@
 <template>
   <div class="p-2">
-    <UDrawer direction="right">
+    <UDrawer direction="right" :handle="false" :ui="{content: 'w-screen h-screen md:max-w-md'}">
       <UButton label="Confirm" color="neutral" variant="outline" />
 
       <template #content>
         <!-- <Placeholder class="min-w-96 min-h-96 size-full m-4" /> -->
-        <div class="w-screen h-screen md:max-w-md">
+        <div class="h-full">
           <UAuthForm
             :schema="schema"
             :fields="fields"

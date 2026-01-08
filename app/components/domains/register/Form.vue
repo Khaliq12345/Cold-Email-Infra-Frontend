@@ -1,6 +1,6 @@
 <template>
-  <div class="max-w-4xl space-y-2">
-    <p class="text-xs text-left text-monoc-500">Search for a new domain.</p>
+  <div class="md:max-w-4xl space-y-2">
+    <p class="text-sm text-left">Search for a new domain.</p>
     <UForm
       :schema="schema"
       :state="state"
@@ -10,7 +10,7 @@
       <UInput v-model="state.name" class="flex-1 min-w-0" />
       <UButton type="submit">Submit</UButton>
     </UForm>
-    <p class="text-xs text-left text-nowrap text-monoc-500 max-w-xs">Review domain registration documentation and supported TLD's.</p>
+    <p class="text-sm text-left text-wrap max-w-xs">Review domain registration documentation and supported TLD's.</p>
   </div>
 </template>
 
