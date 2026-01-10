@@ -12,21 +12,6 @@
 
     <UNavigationMenu :items="items" />
 
-    <template #right>
-      <UColorModeButton />
-
-      <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          to="https://github.com/nuxt/ui"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
-        />
-      </UTooltip>
-    </template>
-
     <template #body>
       <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
     </template>
@@ -46,10 +31,10 @@ const items = computed<NavigationMenuItem[]>(() => [
     active: route.path.startsWith("/domains"),
   },
   {
-    label: "Settings",
-    to: "/settings",
-    icon: "i-lucide-box",
-    active: route.path.startsWith("/settings"),
+    label: "logout",
+    to: "/logout",
+    icon: "i-lucide-log-out",
+    active: route.path.startsWith("/logout"),
   },
 ]);
 </script>

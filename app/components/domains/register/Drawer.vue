@@ -107,13 +107,35 @@ const state = reactive<Partial<Schema>>({
   postalCode: undefined,
 });
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({
-    title: "Success",
-    description: "Domain registration completed!",
-    color: "success",
-  });
-  console.log("Submitted", event.data);
+const isLoading = ref(false);
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  isLoading.value = true;
+  
+  try {
+    const { data } = await $fetch('/api/domains/register', {
+      method: 'POST',
+      body: event.data
+    });
+    
+    toast.add({
+      title: "Success",
+      description: "Domain registration completed!",
+      color: "success",
+    });
+    
+    console.log("Registration successful:", data);
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: "Registration failed. Please try again.",
+      color: "error",
+    });
+    
+    console.error("Registration error:", error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 

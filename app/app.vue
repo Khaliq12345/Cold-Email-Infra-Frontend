@@ -6,4 +6,6 @@
   </UApp>
 </template>
 
-<script setup></script>
+<script setup>
+  const appStore = useAppStore();
+</script>

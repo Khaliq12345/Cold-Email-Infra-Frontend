@@ -1,77 +1,68 @@
 <template>
-  <UPageList>
-    <div
-      v-for="domain in domainsList"
-      :key="domain.value"
-      class="p-3 sm:p-2 rounded-2xl"
-    >
-      <!-- Mobile layout -->
-      <div class="sm:hidden">
-        <div class="flex justify-between items-center mb-2">
-          <div class="flex gap-2 items-center">
-            <div
-              class="w-6 h-6 rounded shrink-0"
-              :style="{ backgroundColor: domain.color }"
-            ></div>
-            <ULink
-              as="button"
-              class="font-medium text-sm truncate"
-              :to="`/domains/${domain.name}`"
-              >{{ domain.name }}</ULink
-            >
-            <ClientOnly>
-              <p
-                v-if="Math.random() > 0.7"
-                class="px-1 py-0.5 text-xs bg-red-500 text-white rounded shrink-0"
-              >
-                Expired
-              </p>
-            </ClientOnly>
-          </div>
-          <UIcon name="i-lucide-ellipsis-vertical" class="w-5 h-5" />
-        </div>
-        <p class="text-sm text-gray-600 dark:text-gray-400">100/100 inboxes</p>
-      </div>
-
-      <!-- Desktop layout -->
-      <div class="hidden sm:grid sm:grid-cols-3 sm:items-center sm:gap-1">
-        <div class="flex gap-2 items-center">
-          <div
-            class="w-8 h-8 rounded shrink-0"
-            :style="{ backgroundColor: domain.color }"
-          ></div>
+  <div class="w-full">
+    <UAccordion :items="domains">
+      <template #default="{ item, open }">
+        <!-- item.content est maintenant Domain -->
+        <div class="w-full space-y-4">
           <ULink
-            as="button"
-            class="font-medium text-sm truncate"
-            :to="`/domains/${domain.name}`"
-            >{{ domain.name }}</ULink
+            :to="`/domains/${item.domain}`"
+            class="text-lg font-bold divide-x divide-monoc-500">{{ item.domain }}</ULink>
+          <div
+            v-if="open"
+            class="w-full flex items-center justify-between gap-4"
           >
-          <ClientOnly>
+            <p class="text-lg">User: {{ item.username }}</p>
             <p
-              v-if="Math.random() > 0.7"
-              class="px-1 py-0.5 text-xs bg-red-500 text-white rounded shrink-0"
+              class="px-2 py-1 rounded-lg"
+              :class="item.ptr ? 'bg-green-700' : 'bg-red-700'"
             >
-              Expired
+              PTR: {{ item.ptr ? "On" : "Off" }}
             </p>
-          </ClientOnly>
+            <p
+              class="px-2 py-1 rounded-lg"
+              :class="item.dkim ? 'bg-green-700' : 'bg-red-700'"
+            >
+              DKIM: {{ item.dkim ? "On" : "Off" }}
+            </p>
+            <p
+              class="px-2 py-1 rounded-lg"
+              :class="item.dmarc ? 'bg-green-700' : 'bg-red-700'"
+            >
+              DMARK: {{ item.dmarc ? "On" : "Off" }}
+            </p>
+          </div>
         </div>
-        <p
-          class="text-base text-gray-600 dark:text-gray-400 justify-self-center"
-        >
-          100/100 inboxes
-        </p>
-        <div class="justify-self-end">
-          <UIcon name="i-lucide-ellipsis-vertical" class="w-5 h-5" />
-        </div>
-      </div>
-    </div>
-  </UPageList>
+        <!-- … -->
+      </template>
+    </UAccordion>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
+const toast = useToast();
 
-defineProps<{
-  domainsList: DomainList;
-}>();
+const domains = ref<DomainList>([]);
+async function getDomains() {
+  const { data, error } = await useApi("/mailcow/domains/khaliq", {
+    // TODO: need to query parameter not url path, Khaliq is hardcoded
+    // query: { username: "khaliq" },
+  });
+  if (error.value) {
+    console.log(error.value);
+    toast.add({
+      title: "Error",
+      description: error.value?.message,
+      color: "error",
+    });
+    return;
+  } else {
+    domains.value = data.value as DomainList;
+    console.log("domains: ", domains.value);
+  }
+}
+
+onMounted(async () => {
+  await getDomains();
+});
 </script>

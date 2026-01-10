@@ -4,17 +4,14 @@
         <DomainsChartHeader />
       </template>
       <template #default>
-        <DomainsChartBody :domains-list="domainsList" />
+        <DomainsChartBody />
       </template>
     </UCard>
   </template>
   
   <script lang="ts" setup>
   import type { DomainList } from '~/types/domain'
-  
-  defineProps<{
-    domainsList: DomainList
-  }>()
+
   </script>
   
   <style>

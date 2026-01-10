@@ -8,15 +8,13 @@
       <h2 class="text-sm">Login to your account</h2>
     </div>
     <UPageCard class="w-full max-w-md ring-0">
-      <UAuthForm
-        :schema="schema"
-        :fields="fields"
-        @submit="onSubmit"
-      />
+      <UAuthForm :schema="schema" :fields="fields" @submit="onSubmit" />
     </UPageCard>
   </div>
   <!-- termis & service -->
-  <div class="fixed bottom-0 left-0 w-full text-xs text-center text-monoc-300 p-4">
+  <div
+    class="fixed bottom-0 left-0 w-full text-xs text-center text-monoc-300 p-4"
+  >
     <p>Terms of service and privacy policy</p>
   </div>
 </template>
@@ -24,10 +22,11 @@
 <script setup lang="ts">
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
+import type { User } from "~/types/user";
 
 definePageMeta({
   layout: false,
-})
+});
 
 const toast = useToast();
 
@@ -52,12 +51,58 @@ const schema = z.object({
   email: z.email("Invalid email"),
   password: z
     .string("Password is required")
-    .min(8, "Must be at least 8 characters"),
+    .min(4, "Must be at least 8 characters"),
 });
 
 type Schema = z.output<typeof schema>;
 
-function onSubmit(payload: FormSubmitEvent<Schema>) {
-  console.log("Submitted", payload);
+// async function onSubmit(payload: FormSubmitEvent<Schema>) {
+//   try {
+//     const api = useApi();
+//     const response = await api<User>('/auth/login', {
+//       method: 'POST',
+//       body: { email: payload.data.email, password: payload.data.password }
+//     });
+
+//     const appStore = useAppStore();
+//     appStore.setUser(response);
+
+//     toast.add({
+//       title: "Success",
+//       description: "Login successful!",
+//       color: "success",
+//     });
+//     await navigateTo('/domains');
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     toast.add({
+//       title: "Error",
+//       description: "Login failed. Please check your credentials.",
+//       color: "error",
+//     });
+//   }
+// }
+async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  const { data, error } = await useApi("/auth/login", {
+    method: "POST",
+    body: { email: payload.data.email, password: payload.data.password },
+  });
+  if(error.value) {
+    toast.add({
+      title: "Error",
+      description: error.value?.message,
+      color: "error",
+    });
+    return;
+  } else {
+    toast.add({
+      title: "Success",
+      description: "Login successful!",
+      color: "success",
+    });
+    const appStore = useAppStore();
+    appStore.setUser(data.value);
+    await navigateTo("/domains");
+  }
 }
 </script>

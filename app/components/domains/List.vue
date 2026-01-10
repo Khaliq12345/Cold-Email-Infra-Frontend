@@ -4,7 +4,7 @@
       <DomainsListHeader />
     </template>
     <template #default>
-      <DomainsListBody :domains-list="domainsList" />
+      <DomainsListBody />
     </template>
   </UCard>
 </template>
@@ -12,7 +12,11 @@
 <script lang="ts" setup>
 import type { DomainList } from '~/types/domain'
 
-defineProps<{
-  domainsList: DomainList
-}>()
+const domains = ref<DomainList>([])
+
+async function getDomains() {
+  const { data, error } = await useApi("mailcow/domains/khaliq")
+  if(error.value) {}
+}
+
 </script>

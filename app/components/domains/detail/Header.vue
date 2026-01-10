@@ -6,8 +6,8 @@
           <Icon name="i-lucide-globe" class="text-white p-2" size="30"/>
         </div>
         <div>
-          <h1 class="text-xl font-bold">{{ name }}</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Domain Details</p>
+          <h1 class="text-xl font-bold">{{ domainInfo?.domain_name || name }}</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{{ domainInfo?.description }}</p>
         </div>
       </div>
       <div class="flex gap-2">
@@ -16,29 +16,38 @@
       </div>
     </div>
     <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 p-2">
-      <div v-for="detail in details" :key="detail.label" class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ detail.label }}</p>
-        <p class="font-medium text-sm">{{ detail.value }}</p>
+      <div class="text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
+        <p class="font-medium text-sm">{{ domainInfo?.active ? 'Active' : 'Inactive' }}</p>
+      </div>
+      <div class="text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Messages</p>
+        <p class="font-medium text-sm">{{ domainInfo?.msgs_total || '0' }}</p>
+      </div>
+      <div class="text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Mailboxes Left</p>
+        <p class="font-medium text-sm">{{ domainInfo?.mboxes_left || '0' }}</p>
+      </div>
+      <div class="text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400">Created</p>
+        <p class="font-medium text-sm">{{ formatDate(domainInfo?.created) }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { DomainInfo } from '~/types/domain'
+
 interface Props {
-  name: string;
+  name: string | null
+  domainInfo?: DomainInfo | null
 }
 
-interface Detail {
-  label: string;
-  value: string;
-}
+defineProps<Props>()
 
-const props = defineProps<Props>();
-const details = ref<Detail[]>([
-  { label: "Status", value: "Expired" },
-  { label: "Inboxes", value: "100/100" },
-  { label: "Redirect", value: "adchat.ai" },
-  { label: "Created", value: "Day ago" },
-]);
+function formatDate(dateStr?: string) {
+  if (!dateStr) return 'N/A'
+  return new Date(dateStr).toLocaleDateString()
+}
 </script>
