@@ -4,7 +4,7 @@
   </div>
   <div class="flex min-h-screen flex-col items-center justify-center gap-1 p-2">
     <div class="text-center space-y-2">
-      <h1 class="text-4xl">Enterprise</h1>
+      <h1 class="text-4xl">Existantly</h1>
       <h2 class="text-sm">Login to your account</h2>
     </div>
     <UPageCard class="w-full max-w-md ring-0">
@@ -20,13 +20,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ skipAuth: true, layout: false });
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 import type { User } from "~/types/user";
-
-definePageMeta({
-  layout: false,
-});
 
 const toast = useToast();
 
@@ -68,14 +65,17 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       color: "success",
     });
     const appStore = useAppStore();
-    appStore.setUser(response);
+    appStore.setUser(response as User);
     await navigateTo("/domains");
   } catch (error) {
     toast.add({
-      title: "Error",
-      description: error,
+      title: "Error while login",
+      description: "Please check your credentials",
       color: "error",
     });
   }
 }
+onMounted(() => {
+  if(useAppStore().user) navigateTo("/domains")
+})
 </script>

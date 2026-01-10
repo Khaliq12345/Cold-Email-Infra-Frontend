@@ -1,13 +1,21 @@
 <template>
-  <div>
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
+  <div v-if="domainInfo">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+    >
       <div class="flex items-center gap-3">
-        <div class="w-14 h-14 rounded-lg bg-blue-500 flex items-center justify-center">
-          <Icon name="i-lucide-globe" class="text-white p-2" size="30"/>
+        <div
+          class="w-14 h-14 rounded-lg bg-blue-500 flex items-center justify-center"
+        >
+          <Icon name="i-lucide-globe" class="text-white p-2" size="30" />
         </div>
         <div>
-          <h1 class="text-xl font-bold">{{ domainInfo?.domain_name || name }}</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">{{ domainInfo?.description }}</p>
+          <h1 class="text-xl font-bold">
+            {{ domainInfo?.domain_name || name }}
+          </h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {{ domainInfo?.description }}
+          </p>
         </div>
       </div>
       <div class="flex gap-2">
@@ -18,15 +26,17 @@
     <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 p-2">
       <div class="text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
-        <p class="font-medium text-sm">{{ domainInfo?.active ? 'Active' : 'Inactive' }}</p>
+        <p class="font-medium text-sm">
+          {{ domainInfo?.active ? "Active" : "Inactive" }}
+        </p>
       </div>
       <div class="text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400">Messages</p>
-        <p class="font-medium text-sm">{{ domainInfo?.msgs_total || '0' }}</p>
+        <p class="font-medium text-sm">{{ domainInfo?.msgs_total || "0" }}</p>
       </div>
       <div class="text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400">Mailboxes Left</p>
-        <p class="font-medium text-sm">{{ domainInfo?.mboxes_left || '0' }}</p>
+        <p class="font-medium text-sm">{{ domainInfo?.mboxes_left || "0" }}</p>
       </div>
       <div class="text-center">
         <p class="text-sm text-gray-500 dark:text-gray-400">Created</p>
@@ -34,20 +44,45 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <div
+      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
+    >
+      <div class="flex items-center gap-3">
+        <USkeleton class="w-14 h-14 rounded-lg" />
+        <div class="space-y-2">
+          <USkeleton class="h-6 w-48" />
+          <USkeleton class="h-4 w-64" />
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <USkeleton class="h-8 w-20 rounded-md" />
+        <USkeleton class="h-8 w-20 rounded-md" />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 p-2">
+      <div v-for="i in 4" :key="i" class="text-center space-y-1">
+        <USkeleton class="h-4 w-16 mx-auto" />
+        <USkeleton class="h-5 w-12 mx-auto" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { DomainInfo } from '~/types/domain'
+import type { DomainInfo } from "~/types/domain";
 
 interface Props {
-  name: string | null
-  domainInfo?: DomainInfo | null
+  name: string | null;
+  domainInfo?: DomainInfo | null;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 function formatDate(dateStr?: string) {
-  if (!dateStr) return 'N/A'
-  return new Date(dateStr).toLocaleDateString()
+  if (!dateStr) return "N/A";
+  return new Date(dateStr).toLocaleDateString();
 }
 </script>
