@@ -2,37 +2,54 @@
   <div class="w-full">
     <UAccordion :items="domains">
       <template #default="{ item, open }">
-        <!-- item.content est maintenant Domain -->
-        <div class="w-full space-y-4">
+        <div
+          class="w-full space-y-4 p-4 border-b border-gray-100 dark:border-gray-800"
+        >
           <ULink
             :to="`/domains/${item.domain}`"
-            class="text-lg font-bold divide-x divide-monoc-500">{{ item.domain }}</ULink>
+            class="text-lg font-bold text-primary-600 dark:text-primary-400 hover:text-primary-500 transition-colors"
+          >
+            {{ item.domain }}
+          </ULink>
+
           <div
             v-if="open"
-            class="w-full flex items-center justify-between gap-4"
+            class="w-full flex flex-wrap items-center justify-between gap-4"
           >
-            <p class="text-lg">User: {{ item.username }}</p>
-            <p
-              class="px-2 py-1 rounded-lg"
-              :class="item.ptr ? 'bg-green-700' : 'bg-red-700'"
+            <UBadge
+              color="neutral"
+              variant="soft"
+              size="md"
+              icon="i-heroicons-user-circle"
+              class="capitalize"
             >
-              PTR: {{ item.ptr ? "On" : "Off" }}
-            </p>
-            <p
-              class="px-2 py-1 rounded-lg"
-              :class="item.dkim ? 'bg-green-700' : 'bg-red-700'"
-            >
-              DKIM: {{ item.dkim ? "On" : "Off" }}
-            </p>
-            <p
-              class="px-2 py-1 rounded-lg"
-              :class="item.dmarc ? 'bg-green-700' : 'bg-red-700'"
-            >
-              DMARK: {{ item.dmarc ? "On" : "Off" }}
-            </p>
+              {{ item.username }}
+            </UBadge>
+
+            <div class="flex gap-2">
+              <UBadge
+                :label="`PTR: ${item.ptr ? 'On' : 'Off'}`"
+                :color="item.ptr ? 'success' : 'error'"
+                variant="subtle"
+                size="md"
+              />
+
+              <UBadge
+                :label="`DKIM: ${item.dkim ? 'On' : 'Off'}`"
+                :color="item.dkim ? 'success' : 'error'"
+                variant="subtle"
+                size="md"
+              />
+
+              <UBadge
+                :label="`DMARC: ${item.dmarc ? 'On' : 'Off'}`"
+                :color="item.dmarc ? 'success' : 'error'"
+                variant="subtle"
+                size="md"
+              />
+            </div>
           </div>
         </div>
-        <!-- … -->
       </template>
     </UAccordion>
   </div>
@@ -44,21 +61,20 @@ const toast = useToast();
 
 const domains = ref<DomainList>([]);
 async function getDomains() {
-  const { data, error } = await useApi("/mailcow/domains/khaliq", {
-    // TODO: need to query parameter not url path, Khaliq is hardcoded
-    // query: { username: "khaliq" },
-  });
-  if (error.value) {
-    console.log(error.value);
+  try {
+    const response = await useApi("/mailcow/domains/khaliq", {
+      // TODO: need to query parameter not url path, Khaliq is hardcoded
+      // query: { username: "khaliq" },
+    });
+
+    domains.value = response as DomainList;
+    console.log("domains: ", domains.value);
+  } catch (error) {
     toast.add({
       title: "Error",
-      description: error.value?.message,
+      description: error,
       color: "error",
     });
-    return;
-  } else {
-    domains.value = data.value as DomainList;
-    console.log("domains: ", domains.value);
   }
 }
 

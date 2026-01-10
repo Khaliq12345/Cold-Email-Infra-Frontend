@@ -56,53 +56,26 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>;
 
-// async function onSubmit(payload: FormSubmitEvent<Schema>) {
-//   try {
-//     const api = useApi();
-//     const response = await api<User>('/auth/login', {
-//       method: 'POST',
-//       body: { email: payload.data.email, password: payload.data.password }
-//     });
-
-//     const appStore = useAppStore();
-//     appStore.setUser(response);
-
-//     toast.add({
-//       title: "Success",
-//       description: "Login successful!",
-//       color: "success",
-//     });
-//     await navigateTo('/domains');
-//   } catch (error) {
-//     console.error("Login error:", error);
-//     toast.add({
-//       title: "Error",
-//       description: "Login failed. Please check your credentials.",
-//       color: "error",
-//     });
-//   }
-// }
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  const { data, error } = await useApi("/auth/login", {
-    method: "POST",
-    body: { email: payload.data.email, password: payload.data.password },
-  });
-  if(error.value) {
-    toast.add({
-      title: "Error",
-      description: error.value?.message,
-      color: "error",
+  try {
+    const response = await useApi("/auth/login", {
+      method: "POST",
+      body: { email: payload.data.email, password: payload.data.password },
     });
-    return;
-  } else {
     toast.add({
       title: "Success",
       description: "Login successful!",
       color: "success",
     });
     const appStore = useAppStore();
-    appStore.setUser(data.value);
+    appStore.setUser(response);
     await navigateTo("/domains");
+  } catch (error) {
+    toast.add({
+      title: "Error",
+      description: error,
+      color: "error",
+    });
   }
 }
 </script>
