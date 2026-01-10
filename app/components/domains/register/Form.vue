@@ -8,7 +8,13 @@
       @submit="onSubmit"
     >
       <UInput v-model="state.name" class="flex-1" />
-      <UButton type="submit">Submit</UButton>
+      <UButton
+        type="submit"
+        :disabled="props.isSearching"
+        :class="isSearching ? 'animate-pulse' : ''"
+      >
+        {{ isSearching ? "Searching..." : "Submit" }}
+      </UButton>
     </UForm>
     <p class="text-sm text-center text-wrap max-w-xs mt-4">
       Review domain registration documentation and supported TLD's.
@@ -19,6 +25,15 @@
 <script lang="ts" setup>
 import * as z from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
+
+const props = defineProps({
+  isSearching: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["submit"]);
 
 const schema = z.object({
   name: z.string("Name is required"),
@@ -32,11 +47,6 @@ const state = reactive<Partial<Schema>>({
 
 const toast = useToast();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({
-    title: "Success",
-    description: "The form has been submitted.",
-    color: "success",
-  });
-  console.log(event.data);
+  emit("submit", event.data.name);
 }
 </script>

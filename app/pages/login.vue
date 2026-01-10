@@ -65,6 +65,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       color: "success",
     });
     const appStore = useAppStore();
+    console.log("login response: ", response)
     appStore.setUser(response as User);
     await navigateTo("/domains");
   } catch (error) {

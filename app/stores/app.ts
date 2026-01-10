@@ -18,6 +18,7 @@ export const useAppStore = defineStore(
     function logout() {
       setUser(null);
     }
+
     return { user, getUser, setUser, logout };
   },
   {
