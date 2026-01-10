@@ -11,14 +11,13 @@
       </UCard>
     </UContainer>
     <UContainer>
-      <DomainsDetailList />
+      <DomainsDetailList :domain="slug as string" />
     </UContainer>
   </div>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
-  middleware: "auth",
 });
 
 import type { DomainInfo } from "~/types/domain";
@@ -39,7 +38,7 @@ async function getDomain() {
   } catch (error) {
     toast.add({
       title: "Error",
-      description: error,
+      description: error as string,
       color: "error",
     });
   }

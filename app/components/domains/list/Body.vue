@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full">
+  <div class="w-full" v-if="domains.length > 0">
     <UAccordion :items="domains">
       <template #default="{ item, open }">
         <div
-          class="w-full space-y-4 p-4 border-b border-gray-100 dark:border-gray-800"
+          class="w-full space-y-4 p-2 border-b border-gray-100 dark:border-gray-800 last:border-none"
         >
           <ULink
             :to="`/domains/${item.domain}`"
@@ -53,10 +53,23 @@
       </template>
     </UAccordion>
   </div>
+  <div v-else class="space-y-4">
+    <div v-for="i in skeletonCount" :key="i"  class="space-y-3">
+      <!-- line 1 -->
+      <USkeleton class="h-4 w-1/3" />
+      <!-- line 2 -->
+      <div class="w-1/4 grid grid-cols-3 gap-3">
+        <USkeleton class="h-4" />
+        <USkeleton class="h-4" />
+        <USkeleton class="h-4" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
+const skeletonCount = ref(3)
 const toast = useToast();
 
 const domains = ref<DomainList>([]);
@@ -72,7 +85,7 @@ async function getDomains() {
   } catch (error) {
     toast.add({
       title: "Error",
-      description: error,
+      description: "An error occur when getting domains, try again",
       color: "error",
     });
   }
