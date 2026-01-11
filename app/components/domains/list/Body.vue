@@ -54,7 +54,7 @@
     </UAccordion>
   </div>
   <div v-else class="space-y-4">
-    <div v-for="i in skeletonCount" :key="i"  class="space-y-3">
+    <div v-for="i in skeletonCount" :key="i" class="space-y-3">
       <!-- line 1 -->
       <USkeleton class="h-4 w-1/3" />
       <!-- line 2 -->
@@ -69,16 +69,16 @@
 
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
-const skeletonCount = ref(3)
+const skeletonCount = ref(3);
 const toast = useToast();
-
+const appStore = useAppStore();
 const domains = ref<DomainList>([]);
 async function getDomains() {
   try {
-    const response = await useApi("/mailcow/domains/khaliq", {
-      // TODO: need to query parameter not url path, Khaliq is hardcoded
-      // query: { username: "khaliq" },
-    });
+    const response = await useApi(
+      `mailcow/domains/${appStore.user?.user.user_metadata.username}`,
+      {}
+    );
 
     domains.value = response as DomainList;
     console.log("domains: ", domains.value);

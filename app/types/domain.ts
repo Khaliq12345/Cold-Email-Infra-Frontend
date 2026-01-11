@@ -51,3 +51,23 @@ export interface DomainInfo {
   aliases_left: number
   domain_admins: string
 }
+
+export interface DomainSuggestion {
+  ps: string 
+  domain: string
+  subdomain: string
+  path: string
+}
+
+export interface DomainSearchResult {
+  domain: string
+  data: DomainSuggestion[]
+}
+
+export interface DomainAvailability {
+  domain: string
+  status: {
+    clientIp: string
+    status: 'avail' | 'taken'
+  }
+}

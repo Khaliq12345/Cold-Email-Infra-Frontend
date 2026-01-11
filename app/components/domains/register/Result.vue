@@ -1,34 +1,55 @@
 <template>
-  <div class="w-full px-1 text-sm space-y-4">
+  <div v-if="searchResult || hasError" class="w-full px-1 text-sm space-y-4">
     <!-- Not available -->
     <div
+      v-if="hasError"
       class="p-2 flex gap-2 items-center ring ring-orange-400 rounded-lg mb-5"
     >
       <UIcon name="i-lucide-triangle-alert" :size="40" />
-      <div>
-        <h3><strong>Exemple.com</strong> is not available</h3>
-        <p>Exemple.com connot be registered yet.</p>
-      </div>
+      <p>No domains found</p>
     </div>
+
     <!-- Text -->
-    <div>
+    <div v-if="searchResult?.data.length">
       <h2>Suggested domain names.</h2>
       <p>The following is a list of suggestions that may be available</p>
     </div>
+
     <!-- List -->
-    <div class="flex flex-col gap-2">
+    <div v-if="searchResult?.data.length" class="flex flex-col gap-2">
       <div
-        v-for="domain in suggestedDomains"
+        v-for="suggestion in searchResult.data"
+        :key="suggestion.domain"
         class="p-2 flex items-center justify-between border-b border-b-monoc-500 last:border-b-0"
       >
-        <p>{{ domain.name }}</p>
+        <div>
+          <p class="font-medium">{{ suggestion.domain }}</p>
+          <p class="text-xs text-gray-500">{{ suggestion.subdomain }}</p>
+        </div>
         <div class="flex items-center gap-1">
           <div class="text-right">
-            <p>${{ domain.prices }}</p>
-            <p class="text-xs text-left">Renews at ${{ domain.prices }}</p>
+            <p class="font-semibold">{{ suggestion.ps }}</p>
+            <p
+              class="text-xs"
+              :class="{
+                'text-green-600':
+                  domainStatusesComputed[suggestion.domain]?.status === 'avail',
+                'text-red-600':
+                  domainStatusesComputed[suggestion.domain]?.status === 'taken',
+                'text-gray-500':
+                  domainStatusesComputed[suggestion.domain]?.status ===
+                  'checking',
+              }"
+            >
+              {{ domainStatusesComputed[suggestion.domain]?.text }}
+            </p>
           </div>
-          <!-- <UButton variant="outline">Confirm</UButton> -->
-          <DomainsRegisterDrawer />
+          <DomainsRegisterDrawer
+            :domain="suggestion.domain"
+            :disabled="
+              domainStatusesComputed[suggestion.domain]?.status !== 'avail'
+            "
+          />
         </div>
       </div>
     </div>
@@ -36,27 +57,71 @@
 </template>
 
 <script lang="ts" setup>
-interface SuggestedDomain {
-  name: string;
-  available: boolean;
-  prices: number;
+import type { DomainSearchResult, DomainAvailability } from "~/types/domain";
+
+const props = defineProps<{
+  searchResult?: DomainSearchResult | null;
+  hasError?: boolean;
+  errorMessage?: string;
+}>();
+
+const domainStatuses = ref<
+  Record<string, { status: "avail" | "taken" | "checking"; text: string }>
+>({});
+
+const domainStatusesComputed = computed(() => {
+  const statuses: Record<
+    string,
+    { status: "avail" | "taken" | "checking"; text: string }
+  > = {};
+
+  if (props.searchResult?.data) {
+    props.searchResult.data.forEach((suggestion) => {
+      const domain = suggestion.domain;
+      const cached = domainStatuses.value[domain];
+      const status = cached?.status || "checking";
+      const text =
+        status === "checking"
+          ? "Checking..."
+          : status === "avail"
+          ? "Available"
+          : "Taken";
+
+      statuses[domain] = { status, text };
+    });
+  }
+
+  return statuses;
+});
+
+async function checkDomainStatus(domain: string) {
+  if (domainStatuses.value[domain]) return;
+
+  domainStatuses.value[domain] = { status: "checking", text: "Checking..." };
+
+  try {
+    const response = (await useApi(
+      `/domains/status/${domain}`
+    )) as DomainAvailability;
+    domainStatuses.value[domain] = {
+      status: response.status.status,
+      text: response.status.status === "avail" ? "Available" : "Taken",
+    };
+  } catch (error) {
+    console.log(error);
+    domainStatuses.value[domain] = { status: "taken", text: "Error" };
+  }
 }
-const suggestedDomains = ref<SuggestedDomain[]>([
-  { name: "example.net", available: true, prices: 12.99 },
-  { name: "example.org", available: false, prices: 10.99 },
-  { name: "example.co", available: true, prices: 14.99 },
 
-  { name: "example.com", available: true, prices: 15.99 },
-  { name: "example.io", available: true, prices: 29.99 },
-  { name: "example.dev", available: false, prices: 19.99 },
-  { name: "example.app", available: true, prices: 18.99 },
-  { name: "example.tech", available: true, prices: 21.99 },
-  { name: "example.shop", available: false, prices: 9.99 },
-  { name: "example.xyz", available: true, prices: 1.99 },
-  { name: "example.online", available: true, prices: 3.99 },
-  { name: "example.site", available: false, prices: 4.99 },
-  { name: "example.fr", available: true, prices: 8.99 },
-]);
+watch(
+  () => props.searchResult?.data,
+  (newData) => {
+    if (newData) {
+      newData.forEach((suggestion) => {
+        checkDomainStatus(suggestion.domain);
+      });
+    }
+  },
+  { immediate: true }
+);
 </script>
-
-<style></style>
