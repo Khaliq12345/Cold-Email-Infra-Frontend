@@ -27,7 +27,7 @@
           </div>
 
           <!-- Registrant -->
-          <UCollapsible>
+          <UCollapsible :default-open="true">
             <UButton
               variant="ghost"
               color="neutral"
@@ -36,78 +36,7 @@
               Registrant
             </UButton>
             <template #content>
-              <UForm
-                :schema="contactSchema"
-                :state="formState.registrant"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <UFormField label="First name" required>
-                  <UInput
-                    v-model="formState.registrant.firstName"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Last name" required>
-                  <UInput
-                    v-model="formState.registrant.lastName"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Organization" class="md:col-span-2">
-                  <UInput
-                    v-model="formState.registrant.organizationName"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Email" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.registrant.emailAddress"
-                    type="email"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Country" required>
-                  <USelect
-                    v-model="formState.registrant.country"
-                    :options="countries"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Phone Number" required>
-                  <UInput
-                    v-model="formState.registrant.phone"
-                    type="tel"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Address line 1" required>
-                  <UInput
-                    v-model="formState.registrant.address1"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Address line 2">
-                  <UInput
-                    v-model="formState.registrant.address1"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="City" required>
-                  <UInput v-model="formState.registrant.city" class="w-full" />
-                </UFormField>
-                <UFormField label="State/Province" required>
-                  <UInput
-                    v-model="formState.registrant.stateProvince"
-                    class="w-full"
-                  />
-                </UFormField>
-                <UFormField label="Postal Code" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.registrant.postalCode"
-                    class="w-full"
-                  />
-                </UFormField>
-              </UForm>
+              <DomainsRegisterContactForm v-model="formState.registrant" />
             </template>
           </UCollapsible>
 
@@ -121,97 +50,13 @@
                 v-model="syncAdmin"
                 label="Same as registrant"
                 class="text-nowrap"
-                @change="handleSync('admin', $event)"
               />
             </div>
             <template #content>
-              <UForm
-                :schema="contactSchema"
-                :state="formState.admin"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+              <DomainsRegisterContactForm
+                v-model="formState.admin"
                 :disabled="syncAdmin"
-              >
-                <UFormField label="First name" required>
-                  <UInput
-                    v-model="formState.admin.firstName"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Last name" required>
-                  <UInput
-                    v-model="formState.admin.lastName"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Organization" class="md:col-span-2">
-                  <UInput
-                    v-model="formState.admin.organizationName"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Email" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.admin.emailAddress"
-                    type="email"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Country" required>
-                  <USelect
-                    v-model="formState.admin.country"
-                    :options="countries"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Phone Number" required>
-                  <UInput
-                    v-model="formState.admin.phone"
-                    type="tel"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Address line 1" required>
-                  <UInput
-                    v-model="formState.admin.address1"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Address line 2">
-                  <UInput
-                    v-model="formState.admin.address2"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="City" required>
-                  <UInput
-                    v-model="formState.admin.city"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="State/Province" required>
-                  <UInput
-                    v-model="formState.admin.stateProvince"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-                <UFormField label="Postal Code" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.admin.postalCode"
-                    class="w-full"
-                    :disabled="syncAdmin"
-                  />
-                </UFormField>
-              </UForm>
+              />
             </template>
           </UCollapsible>
 
@@ -222,100 +67,36 @@
                 Tech Contact
               </UButton>
               <UCheckbox
-                class="text-nowrap"
                 v-model="syncTech"
                 label="Same as registrant"
-                @change="handleSync('tech', $event)"
+                class="text-nowrap"
               />
             </div>
             <template #content>
-              <UForm
-                :schema="contactSchema"
-                :state="formState.tech"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+              <DomainsRegisterContactForm
+                v-model="formState.tech"
                 :disabled="syncTech"
-              >
-                <UFormField label="First name" required>
-                  <UInput
-                    v-model="formState.tech.firstName"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Last name" required>
-                  <UInput
-                    v-model="formState.tech.lastName"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Organization" class="md:col-span-2">
-                  <UInput
-                    v-model="formState.tech.organizationName"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Email" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.tech.emailAddress"
-                    type="email"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Country" required>
-                  <USelect
-                    v-model="formState.tech.country"
-                    :options="countries"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Phone Number" required>
-                  <UInput
-                    v-model="formState.tech.phone"
-                    type="tel"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Address line 1" required>
-                  <UInput
-                    v-model="formState.tech.address1"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Address line 2">
-                  <UInput
-                    v-model="formState.tech.address2"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="City" required>
-                  <UInput
-                    v-model="formState.tech.city"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="State/Province" required>
-                  <UInput
-                    v-model="formState.tech.stateProvince"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-                <UFormField label="Postal Code" required class="md:col-span-2">
-                  <UInput
-                    v-model="formState.tech.postalCode"
-                    class="w-full"
-                    :disabled="syncTech"
-                  />
-                </UFormField>
-              </UForm>
+              />
+            </template>
+          </UCollapsible>
+
+          <!-- AuxBilling Contact -->
+          <UCollapsible class="mt-2">
+            <div class="flex gap-2 items-center justify-between">
+              <UButton variant="ghost" color="neutral" class="w-full">
+                Billing Contact
+              </UButton>
+              <UCheckbox
+                v-model="syncBilling"
+                label="Same as registrant"
+                class="text-nowrap"
+              />
+            </div>
+            <template #content>
+              <DomainsRegisterContactForm
+                v-model="formState.billing"
+                :disabled="syncBilling"
+              />
             </template>
           </UCollapsible>
 
@@ -334,23 +115,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { Contact } from "~/types/contact";
 import * as z from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
-
-// Type Contact manquant - à créer dans ~/types/contact.ts
-export interface Contact {
-  firstName: string;
-  lastName: string;
-  organizationName?: string;
-  emailAddress: string;
-  country: string;
-  phone: string;
-  address1: string;
-  address2?: string;
-  city: string;
-  stateProvince: string;
-  postalCode: string;
-}
 
 const toast = useToast();
 
@@ -359,108 +125,93 @@ const props = defineProps<{
   disabled?: boolean;
 }>();
 
-const countries = [
-  { label: "United States", value: "US" },
-  { label: "Canada", value: "CA" },
-  { label: "United Kingdom", value: "GB" },
-  { label: "France", value: "FR" },
-  { label: "Germany", value: "DE" },
-];
-
-const contactSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  organizationName: z.string().optional(),
-  emailAddress: z.string().email("Invalid email"),
-  country: z.string().min(1, "Country is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  address1: z.string().min(1, "Address line 1 is required"),
-  city: z.string().min(1, "City is required"),
-  stateProvince: z.string().min(1, "State/Province is required"),
-  postalCode: z.string().min(1, "Postal code is required"),
+const emptyContact = (): Contact => ({
+  firstName: "",
+  lastName: "",
+  organizationName: "",
+  emailAddress: "",
+  country: "",
+  phone: "",
+  address1: "",
+  address2: "",
+  city: "",
+  stateProvince: "",
+  postalCode: "",
 });
-
-// Correction: utiliser contactSchema au lieu de schema
-type Schema = z.output<typeof contactSchema>;
 
 const formState = reactive<{
   registrant: Contact;
   admin: Contact;
   tech: Contact;
 }>({
-  registrant: {
-    firstName: "",
-    lastName: "",
-    organizationName: "",
-    emailAddress: "",
-    country: "",
-    phone: "",
-    address1: "",
-    address2: "",
-    city: "",
-    stateProvince: "",
-    postalCode: "",
-  },
-  admin: {
-    firstName: "",
-    lastName: "",
-    organizationName: "",
-    emailAddress: "",
-    country: "",
-    phone: "",
-    address1: "",
-    address2: "",
-    city: "",
-    stateProvince: "",
-    postalCode: "",
-  },
-  tech: {
-    firstName: "",
-    lastName: "",
-    organizationName: "",
-    emailAddress: "",
-    country: "",
-    phone: "",
-    address1: "",
-    address2: "",
-    city: "",
-    stateProvince: "",
-    postalCode: "",
-  },
+  registrant: emptyContact(),
+  admin: emptyContact(),
+  tech: emptyContact(),
+  billing: emptyContact(),
 });
 
-// État des collapsibles
-const isRegistrantOpen = ref(true);
-const isAdminOpen = ref(false);
-const isTechOpen = ref(false);
-
-// Cases à cocher de synchronisation
 const syncAdmin = ref(false);
 const syncTech = ref(false);
+const syncBilling = ref(false);
 
-function handleSync(type: "admin" | "tech", checked: boolean) {
-  if (checked) {
-    formState[type] = { ...formState.registrant };
+// Watch for sync changes
+watch(syncAdmin, (isSync) => {
+  if (isSync) {
+    formState.admin = { ...formState.registrant };
   }
-}
+});
+
+watch(syncTech, (isSync) => {
+  if (isSync) {
+    formState.tech = { ...formState.registrant };
+  }
+});
+
+watch(syncBilling, (isSync) => {
+  if (isSync) {
+    formState.billing = { ...formState.registrant };
+  }
+});
+
+// Watch registrant changes and sync to admin/tech if needed
+watch(
+  () => formState.registrant,
+  (newRegistrant) => {
+    if (syncAdmin.value) {
+      formState.admin = { ...newRegistrant };
+    }
+    if (syncTech.value) {
+      formState.tech = { ...newRegistrant };
+    }
+    if (syncBilling.value) {
+      formState.billing = { ...newRegistrant };
+    }
+  },
+  { deep: true },
+);
 
 const isLoading = ref(false);
 
 async function onSubmit() {
   isLoading.value = true;
-
   try {
     const payload = {
       registrant: formState.registrant,
       admin: syncAdmin.value ? formState.registrant : formState.admin,
       tech: syncTech.value ? formState.registrant : formState.tech,
+      billing: syncBilling.value ? formState.registrant : formState.billing,
     };
+    console.log(payload);
 
-    const response = await $fetch("/api/domains/register", {
+    const response = await useApi(`/namecheap/domains/create/khaliq`, {
       method: "POST",
       body: {
-        domain: props.domain,
-        contacts: payload,
+        domainName: props.domain,
+        years: 2,
+        registrant: payload.registrant,
+        admin: payload.admin,
+        tech: payload.tech,
+        auxBilling: payload.billing,
       },
     });
 

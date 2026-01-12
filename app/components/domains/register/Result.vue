@@ -1,5 +1,5 @@
 <template>
-  <div v-if="searchResult || hasError" class="w-full px-1 text-sm space-y-4">
+  <div v-if="domainStatuses || hasError" class="w-full px-1 text-sm space-y-4">
     <!-- Not available -->
     <div
       v-if="hasError"
@@ -9,46 +9,39 @@
       <p>No domains found</p>
     </div>
 
-    <!-- Text -->
-    <div v-if="searchResult?.data.length">
+    <!-- Available -->
+    <div v-if="domainStatuses">
       <h2>Suggested domain names.</h2>
       <p>The following is a list of suggestions that may be available</p>
     </div>
-
     <!-- List -->
-    <div v-if="searchResult?.data.length" class="flex flex-col gap-2">
+    <div v-if="domainStatuses.length" class="flex flex-col gap-2">
       <div
-        v-for="suggestion in searchResult.data"
-        :key="suggestion.domain"
+        v-for="suggestion in domainStatuses"
+        :key="suggestion"
         class="p-2 flex items-center justify-between border-b border-b-monoc-500 last:border-b-0"
       >
         <div>
           <p class="font-medium">{{ suggestion.domain }}</p>
-          <p class="text-xs text-gray-500">{{ suggestion.subdomain }}</p>
+          <!-- <p class="text-xs text-gray-500">{{ suggestion.subdomain }}</p> -->
         </div>
         <div class="flex items-center gap-1">
           <div class="text-right">
-            <p class="font-semibold">{{ suggestion.ps }}</p>
+            <!-- <p class="font-semibold">{{ suggestion.ps }}</p> -->
             <p
               class="text-xs"
               :class="{
-                'text-green-600':
-                  domainStatusesComputed[suggestion.domain]?.status === 'avail',
-                'text-red-600':
-                  domainStatusesComputed[suggestion.domain]?.status === 'taken',
-                'text-gray-500':
-                  domainStatusesComputed[suggestion.domain]?.status ===
-                  'checking',
+                'text-green-600': suggestion.status === 'avail',
+                'text-red-600': suggestion.status === 'taken',
+                'text-gray-500': suggestion.status === 'checking',
               }"
             >
-              {{ domainStatusesComputed[suggestion.domain]?.text }}
+              {{ suggestion.text || "Checking..." }}
             </p>
           </div>
           <DomainsRegisterDrawer
             :domain="suggestion.domain"
-            :disabled="
-              domainStatusesComputed[suggestion.domain]?.status !== 'avail'
-            "
+            :disabled="suggestion.status !== 'avail'"
           />
         </div>
       </div>
@@ -56,72 +49,82 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { DomainSearchResult, DomainAvailability } from "~/types/domain";
 
 const props = defineProps<{
-  searchResult?: DomainSearchResult | null;
   hasError?: boolean;
   errorMessage?: string;
 }>();
 
-const domainStatuses = ref<
-  Record<string, { status: "avail" | "taken" | "checking"; text: string }>
->({});
+const searchResults: Ref<DomainSearchResult | null> =
+  defineModel("searchResults");
 
-const domainStatusesComputed = computed(() => {
-  const statuses: Record<
-    string,
-    { status: "avail" | "taken" | "checking"; text: string }
-  > = {};
+interface DomainStatus {
+  domain: string;
+  status: "avail" | "taken" | "checking";
+  text: string;
+}
 
-  if (props.searchResult?.data) {
-    props.searchResult.data.forEach((suggestion) => {
-      const domain = suggestion.domain;
-      const cached = domainStatuses.value[domain];
-      const status = cached?.status || "checking";
-      const text =
-        status === "checking"
-          ? "Checking..."
-          : status === "avail"
-          ? "Available"
-          : "Taken";
-
-      statuses[domain] = { status, text };
-    });
-  }
-
-  return statuses;
-});
+const domainStatuses = ref<DomainStatus[]>([]);
 
 async function checkDomainStatus(domain: string) {
-  if (domainStatuses.value[domain]) return;
+  // Check if domain already exists in array
+  const existingIndex = domainStatuses.value.findIndex(
+    (d) => d.domain === domain,
+  );
 
-  domainStatuses.value[domain] = { status: "checking", text: "Checking..." };
+  if (existingIndex !== -1) return; // Already exists, don't check again
+
+  // Add domain with checking status
+  domainStatuses.value.push({
+    domain,
+    status: "checking",
+    text: "Checking...",
+  });
+
+  const currentIndex = domainStatuses.value.length - 1;
 
   try {
     const response = (await useApi(
-      `/domains/status/${domain}`
+      `/domains/status/${domain}`,
     )) as DomainAvailability;
-    domainStatuses.value[domain] = {
-      status: response.status.status,
-      text: response.status.status === "avail" ? "Available" : "Taken",
+    console.log(response);
+
+    // Update the domain status
+    domainStatuses.value[currentIndex] = {
+      domain,
+      status: response.status.available ? "avail" : "taken",
+      text: response.status.available ? "Available" : "Taken",
     };
+    console.log(domainStatuses);
   } catch (error) {
     console.log(error);
-    domainStatuses.value[domain] = { status: "taken", text: "Error" };
+    // Update with error status
+    domainStatuses.value[currentIndex] = {
+      domain,
+      status: "taken",
+      text: "Error",
+    };
   }
 }
 
+// Watch when new domains are added
 watch(
-  () => props.searchResult?.data,
-  (newData) => {
-    if (newData) {
-      newData.forEach((suggestion) => {
-        checkDomainStatus(suggestion.domain);
-      });
+  () => searchResults.value,
+  async (newResults, oldResults) => {
+    // Only run if searchResults actually changed and has data
+    if (!newResults?.data || newResults === oldResults) return;
+
+    console.log("RESULTS", newResults);
+
+    for (const domain of newResults.data.slice(0, 1)) {
+      console.log(domain);
+      await checkDomainStatus(domain);
     }
   },
-  { immediate: true }
+  {
+    immediate: false, // Don't run on mount, only when searchResults changes
+  },
 );
 </script>
