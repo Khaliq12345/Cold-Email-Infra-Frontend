@@ -1,24 +1,46 @@
 <template>
-  <div
-    class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4"
-  >
-    <h2 class="text-lg sm:text-xl font-bold">Domains</h2>
-    <div
-      class="flex flex-col sm:flex-row gap-2 sm:gap-2 items-start sm:items-center"
-    >
+  <div class="w-full flex items-center justify-between gap-2 py-4">
+    <h2 class="text-lg font-bold truncate">Domains</h2>
+
+    <div class="flex items-center gap-1.5 shrink-0">
       <UButton
         to="/domains/import"
-        class="text-sm"
+        variant="ghost"
+        color="gray"
         icon="i-lucide-import"
+        class="sm:hidden"
+      />
+      <UButton
+        to="/domains/import"
         variant="outline"
-      >
-        Import domains
-      </UButton>
-      <UButton size="sm" to="/registrar/register" target="_blank"
-        >Purchase subscription</UButton
-      >
+        color="gray"
+        icon="i-lucide-import"
+        label="Import"
+        class="hidden sm:flex"
+      />
+
+      <UButton
+        to="/registrar/register"
+        target="_blank"
+        color="black"
+        icon="i-heroicons-credit-card"
+        class="sm:hidden"
+      />
+      <UButton
+        to="/registrar/register"
+        target="_blank"
+        color="black"
+        label="Purchase"
+        icon="i-heroicons-credit-card"
+        class="hidden sm:flex"
+      />
+      <UButton
+        variant="ghost"
+        color="gray"
+        icon="i-heroicons-arrow-path"
+        size="md"
+        class="rounded-full px-4"
+      />
     </div>
   </div>
 </template>
-
-<script lang="ts" setup></script>

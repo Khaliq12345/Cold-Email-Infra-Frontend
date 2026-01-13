@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 space-y-4">
+  <div class="space-y-4">
     <UContainer>
       <UCard>
         <template #header>
@@ -17,8 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-});
+definePageMeta({});
 
 import type { DomainInfo } from "~/types/domain";
 const { slug } = useRoute().params;
