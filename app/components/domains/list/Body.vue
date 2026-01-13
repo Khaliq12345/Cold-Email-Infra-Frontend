@@ -59,10 +59,12 @@
             <UButton
               label="Configure"
               color="black"
-              variant="solid"
+              variant="outline"
               size="md"
               icon="i-heroicons-wrench-screwdriver"
               class="rounded-full px-4"
+              :class="item.nameserver ? '' : 'border border-red-400'"
+              :disabled="!item.nameserver"
             />
           </div>
         </div>
