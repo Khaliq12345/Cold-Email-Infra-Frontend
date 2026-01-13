@@ -9,6 +9,7 @@ export interface Domain {
   ptr: boolean;
   username: string;
   status: "running" | "stopped" | "pending"; // ou string si autre valeurs
+  nameserver: true | false;
 }
 
 export type DomainList = Domain[] | [];

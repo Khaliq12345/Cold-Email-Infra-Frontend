@@ -40,7 +40,11 @@
         icon="i-heroicons-arrow-path"
         size="md"
         class="rounded-full px-4"
+        @click="emit('refresh')"
       />
     </div>
   </div>
 </template>
+<script setup lang="ts">
+const emit = defineEmits(["refresh"]);
+</script>

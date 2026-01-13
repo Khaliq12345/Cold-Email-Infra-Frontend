@@ -1,13 +1,14 @@
 <template>
   <UCard>
     <template #header>
-      <DomainsListHeader />
+      <DomainsListHeader @refresh="refreshing++" />
     </template>
     <template #default>
-      <DomainsListBody />
+      <DomainsListBody :key="refreshing" />
     </template>
   </UCard>
 </template>
 
 <script lang="ts" setup>
+const refreshing = ref(0);
 </script>
