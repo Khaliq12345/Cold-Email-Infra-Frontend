@@ -43,8 +43,8 @@ const toast = useToast();
 // TODO: upadate onClick to pass directly api call using tools
 const buttons = [
   {
-    label: "Start Warmup ",
-    icon: "",
+    label: "Start Warmup",
+    icon: "i-lucide-play",
     color: "primary",
     variant: "soft",
     onClick: async () => {
@@ -67,7 +67,7 @@ const buttons = [
   },
   {
     label: "Stop  Warmup ",
-    icon: "",
+    icon: "i-lucide-stop",
     color: "error",
     variant: "soft",
     onClick: async () => {
