@@ -17,6 +17,7 @@
     </template>
 
     <template #right>
+      <ThemeToggle />
       <UButton
         color="primary"
         variant="ghost"
@@ -54,16 +55,9 @@ const items = computed<NavigationMenuItem[]>(() => [
   },
 ]);
 
-const litem = [
-  {
-    label: "logout",
-    to: "/logout",
-    icon: "i-lucide-log-out",
-    active: route.path.startsWith("/logout"),
-  },
-];
 const appStore = useAppStore();
 function logout() {
   appStore.logout();
+  navigateTo("/login");
 }
 </script>
