@@ -1,6 +1,9 @@
 <!-- components/InboxManager.vue -->
 <template>
-  <DomainsDetailListHeader :selectedMails="value"></DomainsDetailListHeader>
+  <DomainsDetailListHeader
+    :selectedMails="value"
+    @refresh="getMailInboxs"
+  ></DomainsDetailListHeader>
 
   <div class="mt-2 p-2 border-t">
     <!-- Select all -->
@@ -23,37 +26,40 @@
     </div>
     <!-- Inbox list -->
     <div v-else class="p-2 grid items-center grid-cols-1">
-      <DomainsDetailDrawer />
       <UCheckboxGroup
         v-model="value"
         value-key="id"
         :items="items"
-        class="flex flex-col gap-2"
+        class="flex flex-col justify-center gap-2"
       >
         <template #label="{ item }">
-          <div class="w-full">
+          <div class="w-full self-center">
             <!-- Ligne principale -->
             <div class="flex items-center justify-between">
               <div class="font-medium text-base">
                 {{ item.name }}
               </div>
               <!-- Bouton info -->
-              <DomainsDetailDrawer />
+              <DomainsDetailDrawer :inbox="item" />
             </div>
 
-            <!-- Ligne secondaire avec les données -->
+            <!-- Secondary line for data -->
             <div class="flex items-center text-sm text-gray-600 mt-1 px-2">
-              <!-- champ quota -->
+              <!-- TODO: need to be total_warmup_send -->
               <div class="w-24 text-right">
                 {{ item.quota }}
               </div>
-              <!-- champ mboxes_left -->
+              <!-- TODO: need to be inbox_percent-->
               <div class="w-24 text-right">
-                {{ item.mboxes_left }}
+                {{ item.local_part }}
               </div>
-              <!-- champ percent_in_use -->
+              <!-- TODO: need to be spam_percent -->
               <div class="w-24 text-right">
-                {{ item.percent_in_use }}
+                {{ item.quota_used }}
+              </div>
+              <!-- TODO: need to be warmup_status -->
+              <div class="w-24 text-right">
+                {{ item.messages }}
               </div>
             </div>
           </div>

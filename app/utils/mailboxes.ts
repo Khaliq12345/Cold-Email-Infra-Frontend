@@ -1,41 +1,46 @@
 import type { MailInbox } from "~/types/inbox";
+
 // TODO: update api work to handke multilens in input
-export default async function startWarmup(mails) {
-  for (const mail in mails) {
+
+export async function startWarmup(mails: any[]) {
+  for (const mail of mails) {
     try {
       const response = await useApi("/mailboxes/startWarmup", {
         method: "POST",
         body: JSON.stringify(mail),
       });
-      await response.json();
+      return { success: true, response: response };
     } catch (error) {
       console.error(error);
+      return { success: false, error: error };
     }
   }
 }
-export default async function stopWarmup(mails) {
-  for (const mail in mails) {
+export async function stopWarmup(mails: any[]) {
+  for (const mail of mails) {
     try {
       const response = await useApi("/mailboxes/stopWarmup", {
         method: "POST",
         body: JSON.stringify(mail),
       });
-      await response.json();
+      return { success: true, response: response };
     } catch (error) {
       console.error(error);
+      return { success: false, error: error };
     }
   }
 }
-export default async function removeMails(mails) {
+export async function removeMails(mails: any[]) {
   for (const mail in mails) {
     try {
       const response = await useApi("/mailboxes/remove", {
         method: "POST",
         body: JSON.stringify(mail),
       });
-      await response.json();
+      return { success: true, response: response };
     } catch (error) {
       console.error(error);
+      return { success: false, error: error };
     }
   }
 }

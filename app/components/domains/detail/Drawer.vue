@@ -6,58 +6,46 @@
     :ui="{ content: 'w-screen h-screen md:max-w-md' }"
   >
     <template #default>
-      <UButton label="Open" color="neutral" variant="soft" />
+      <UButton label="Details" color="neutral" variant="soft" />
     </template>
 
     <!-- HEADER -->
     <template #header>
-      <div class="flex justify-between items-center">
-        <h3 class="text-lg font-semibold">Inbox Details</h3>
+      <div class="flex justify-between items-center border-b border-gray-200">
+        <h3 class="text-lg font-bold">{{ props.inbox.domain }}</h3>
         <UButton icon="i-lucide-x" variant="ghost" @click="open = false" />
       </div>
     </template>
 
     <template #body>
-      // TODO: remplace with norman value
-      <div class="p-4 space-y-6">
-        <section class="space-y-2">
-          <h4 class="font-semibold text-md border-b pb-1">INFO BASIC</h4>
-          <div><strong>Status:</strong> {{ activeInbox?.status }}</div>
-          <div><strong>Warmup:</strong> {{ activeInbox?.status_warmup }}</div>
-          <div><strong>Account:</strong> {{ activeInbox?.account }}</div>
-        </section>
+      <!-- TODO: remplace with norman value -->
+      <!-- Part 1 info -->
+      <div class="grid grid-cols-2 gap-4">
+        <p class="font-semibold underline underline-offset-2">Current status</p>
+        <p>Active</p>
+
+        <p class="font-semibold underline underline-offset-2">Warmup Status</p>
+        <p>Disabled</p>
+
+        <p class="font-semibold underline underline-offset-2">Account</p>
+        <p>name</p>
       </div>
     </template>
 
     <template #footer>
-      // TODO: Add footer content here
-      <div class="p-4 border-t flex justify-end gap-2">
-        <!-- Bouton START (si status_warmup false) -->
-        <UButton
-          v-if="activeInbox && !activeInbox.status_warmup"
-          color="primary"
-          @click="startWarmup"
+      <!-- Part 2 buttons -->
+      <div class="p-2 grid grid-cols-3 gap-2">
+        <UButton color="primary" @click="startWarmup" size="sm"
+          >Start Warmup</UButton
         >
-          Start
-        </UButton>
 
-        <!-- Bouton STOP (si status_warmup true) -->
-        <UButton
-          v-if="activeInbox && activeInbox.status_warmup"
-          color="warning"
-          @click="stopWarmup"
+        <UButton color="error" variant="soft" @click="stopWarmup" size="sm"
+          >Stop Warmup</UButton
         >
-          Stop
-        </UButton>
 
-        <!-- Bouton DELETE (si status_warmup false) -->
-        <UButton
-          v-if="activeInbox && !activeInbox.status_warmup"
-          color="error"
-          @click="deleteInbox"
+        <UButton color="error" variant="soft" @click="deleteInbox" size="sm"
+          >Delete</UButton
         >
-          Delete
-        </UButton>
       </div>
     </template>
   </UDrawer>
@@ -65,6 +53,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+const props = defineProps({
+  inbox: {
+    type: Object,
+    required: true,
+  },
+});
 
 const open = ref(false);
 const activeInbox = ref(null);

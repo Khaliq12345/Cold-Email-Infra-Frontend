@@ -21,12 +21,18 @@
 </template>
 
 <script lang="ts" setup>
+import { startWarmup, stopWarmup, removeMails } from "~/utils/mailboxes";
+
 const props = defineProps({
   selectedMails: {
     type: Array,
     required: true,
   },
 });
+
+const emits = defineEmits(["refresh"]);
+
+const toast = useToast();
 
 // TODO: upadate onClick to pass directly api call using tools
 const buttons = [
@@ -35,8 +41,21 @@ const buttons = [
     icon: "",
     color: "primary",
     variant: "soft",
-    onClick: () => {
-      console.log("selected: ", props.selectedMails);
+    onClick: async () => {
+      const { success, response } = await startWarmup(props.selectedMails);
+      if (success) {
+        toast.add({
+          title: "Warmup Started",
+          description: "Warmup has been started successfully.",
+          color: "success",
+        });
+      } else {
+        toast.add({
+          title: "Warmup Failed",
+          description: response.message,
+          color: "error",
+        });
+      }
     },
   },
   {
@@ -44,8 +63,22 @@ const buttons = [
     icon: "",
     color: "error",
     variant: "soft",
-    onClick: () => {
-      console.log("selected: ", props.selectedMails);
+    onClick: async () => {
+      const { success, response } = await stopWarmup(props.selectedMails);
+      if (success) {
+        toast.add({
+          title: "Warmup Stopped",
+          description: "Warmup has been stopped successfully.",
+          color: "success",
+        });
+        emits("refresh");
+      } else {
+        toast.add({
+          title: "Warmup Failed",
+          description: response.message,
+          color: "error",
+        });
+      }
     },
   },
   {
@@ -53,8 +86,22 @@ const buttons = [
     icon: "i-lucide-trash",
     color: "error",
     variant: "outline",
-    onClick: () => {
-      console.log("selected: ", props.selectedMails);
+    onClick: async () => {
+      const { success, response } = await removeMails(props.selectedMails);
+      if (success) {
+        toast.add({
+          title: "Mailbox Removed",
+          description: "Mailbox has been removed successfully.",
+          color: "success",
+        });
+        emits("refresh");
+      } else {
+        toast.add({
+          title: "Mailbox Removal Failed",
+          description: response.message,
+          color: "error",
+        });
+      }
     },
   },
 ];
