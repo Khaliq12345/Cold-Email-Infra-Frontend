@@ -3,23 +3,11 @@
   <DomainsDetailListHeader
     :selectedMails="value"
     @refresh="getMailInboxs"
+    @selectall="toggleAll"
+    :toggle="value.length === items.length"
   ></DomainsDetailListHeader>
 
   <div class="mt-2 p-2 border-t">
-    <!-- Select all -->
-    <!-- <div
-      class="md:flex md:items-center md:justify-between gap-2 px-4 py-2 border-b border-gray-500 bg-muted/30 space-y-2 md:space-y-0"
-    >
-      <UButton
-        :ui="{ label: 'hidden sm:block ' }"
-        @click="toggleAll"
-        size="sm"
-        >{{
-          value.length === items.length ? "Deselect all" : "Select all"
-        }}</UButton
-      >
-    </div> -->
-
     <!-- Skeleton loading -->
     <div v-if="pending" class="space-y-2 p-4">
       <USkeleton v-for="i in 5" :key="i" class="h-4 w-full" />
@@ -28,40 +16,42 @@
     <div v-else class="p-2 grid items-center grid-cols-1">
       <UCheckboxGroup
         v-model="value"
-        value-key="id"
+        value-key="value"
         :items="items"
         class="flex flex-col justify-center gap-2"
       >
         <template #label="{ item }">
-          <div class="w-full self-center">
-            <!-- Ligne principale -->
-            <div class="flex items-center justify-between">
-              <div class="font-medium text-base">
-                {{ item.name }}
-              </div>
-              <!-- Bouton info -->
-              <DomainsDetailDrawer :inbox="item" />
+          <div class="flex justify-between w-full gap-2">
+            <div class="flex-1 font-semibold truncate">
+              {{ item.email }}
             </div>
 
-            <!-- Secondary line for data -->
-            <div class="flex items-center text-sm text-gray-600 mt-1 px-2">
-              <!-- TODO: need to be total_warmup_send -->
-              <div class="w-24 text-right">
-                {{ item.quota }}
-              </div>
-              <!-- TODO: need to be inbox_percent-->
-              <div class="w-24 text-right">
-                {{ item.local_part }}
-              </div>
-              <!-- TODO: need to be spam_percent -->
-              <div class="w-24 text-right">
-                {{ item.quota_used }}
-              </div>
-              <!-- TODO: need to be warmup_status -->
-              <div class="w-24 text-right">
-                {{ item.messages }}
-              </div>
+            <div class="w-20 font-medium">
+              {{ item.total_warmup_sent }}
+              <span class="text-[10px] uppercase">sent</span>
             </div>
+
+            <div class="w-16 font-bold text-emerald-600">
+              {{ item.inbox_percent }}%
+            </div>
+
+            <div class="w-16 font-bold text-rose-500">
+              {{ item.spam_percent }}%
+            </div>
+
+            <div class="w-24">
+              <UBadge
+                :class="[
+                  'px-2 py-0.5 rounded-full text-xs font-medium border',
+                  item.warmup_status === 'active'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-slate-50 text-slate-600 border-slate-200',
+                ]"
+                >{{ item.warmup_status }}</UBadge
+              >
+            </div>
+
+            <DomainsDetailDrawer :inbox="item" />
           </div>
         </template>
       </UCheckboxGroup>
@@ -78,17 +68,26 @@ const props = defineProps<{
   domain: string;
 }>();
 
+const records = [
+  {
+    email: "test@gmail.com",
+    user_id: "12345",
+    total_warmup_sent: 10,
+    inbox_percent: 90,
+    spam_percent: 10,
+    warmup_status: "active",
+  },
+];
+
 const items = computed<CheckboxGroupItem[]>(() =>
-  inboxes.value.map((inbox, index) => ({
-    id: index,
-    label: inbox.username,
-    ...inbox,
+  records.map((record, index) => ({
+    id: record.user_id,
+    label: record.email,
+    value: record,
+    ...record,
   })),
 );
-
-const emits = defineEmits(["selected"]);
-
-const value = defineModel<number[]>({ default: () => [] });
+const value = ref([]);
 
 const pending = ref(false);
 
@@ -98,7 +97,7 @@ async function toggleAll() {
   if (value.value.length === items.value.length) {
     value.value = [];
   } else {
-    value.value = items.value.map((item) => item.id);
+    value.value = items.value.map((item) => item.value);
   }
 }
 
@@ -119,7 +118,8 @@ async function getMailInboxs() {
     pending.value = false;
   }
 }
-onMounted(async () => {
-  await getMailInboxs();
-});
+
+// onMounted(async () => {
+//   await getMailInboxs();
+// });
 </script>

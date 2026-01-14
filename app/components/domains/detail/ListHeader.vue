@@ -3,6 +3,10 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between p-2">
     <h2 class="text-lg font-semibold">Inboxes</h2>
     <div class="flex items-center gap-2">
+      <USwitch
+        @change="$emit('selectall')"
+        :label="toggle ? 'Deselect all' : 'Select all'"
+      />
       <UButton
         v-for="button in buttons"
         :key="button.label"
@@ -21,16 +25,18 @@
 </template>
 
 <script lang="ts" setup>
-import { startWarmup, stopWarmup, removeMails } from "~/utils/mailboxes";
-
 const props = defineProps({
   selectedMails: {
     type: Array,
     required: true,
   },
+  toggle: {
+    type: Boolean,
+    required: true,
+  },
 });
 
-const emits = defineEmits(["refresh"]);
+const emits = defineEmits(["refresh", "selectall"]);
 
 const toast = useToast();
 
@@ -42,6 +48,7 @@ const buttons = [
     color: "primary",
     variant: "soft",
     onClick: async () => {
+      console.log(props.selectedMails);
       const { success, response } = await startWarmup(props.selectedMails);
       if (success) {
         toast.add({
@@ -64,6 +71,7 @@ const buttons = [
     color: "error",
     variant: "soft",
     onClick: async () => {
+      console.log(props.selectedMails);
       const { success, response } = await stopWarmup(props.selectedMails);
       if (success) {
         toast.add({
@@ -87,6 +95,7 @@ const buttons = [
     color: "error",
     variant: "outline",
     onClick: async () => {
+      console.log(props.selectedMails);
       const { success, response } = await removeMails(props.selectedMails);
       if (success) {
         toast.add({

@@ -10,6 +10,7 @@
         </template>
       </UCard>
     </UContainer>
+
     <UContainer>
       <DomainsDetailList :domain="slug as string" />
     </UContainer>
@@ -28,11 +29,7 @@ const domain = ref<DomainInfo | null>(null);
 async function getDomain() {
   try {
     console.log(slug);
-    const response = await useApi(`/mailcow/domain/${slug}`, {
-      // query: {
-      //   domain: slug,
-      // },
-    });
+    const response = await useApi(`/mailcow/domain/${slug}`, {});
     domain.value = response as DomainInfo;
   } catch (error) {
     toast.add({

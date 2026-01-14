@@ -4,9 +4,11 @@
     direction="right"
     :handle="false"
     :ui="{ content: 'w-screen h-screen md:max-w-md' }"
+    title="Mailbox Details"
+    description="Show Mailbox Details"
   >
     <template #default>
-      <UButton label="Details" color="neutral" variant="soft" />
+      <UBadge variant="soft" color="primary" class="gap-2"> Details </UBadge>
     </template>
 
     <!-- HEADER -->
@@ -52,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 const props = defineProps({
   inbox: {
     type: Object,
