@@ -21,37 +21,39 @@
         class="flex flex-col justify-center gap-2"
       >
         <template #label="{ item }">
-          <div class="flex justify-between w-full gap-2">
-            <div class="flex-1 font-semibold truncate">
+          <div class="flex flex-col md:flex-row justify-between w-full gap-2">
+            <div class="md:flex-1 font-semibold truncate">
               {{ item.email }}
             </div>
 
-            <div class="w-20 font-medium">
-              {{ item.total_warmup_sent }}
-              <span class="text-[10px] uppercase">sent</span>
-            </div>
+            <div class="grid items-center grid-cols-4 md:grid-cols-5 gap-2">
+              <div class="w-10 font-medium text-nowrap">
+                {{ item.total_warmup_sent }}
+                <span class="text-[10px] uppercase">sent</span>
+              </div>
 
-            <div class="w-16 font-bold text-emerald-600">
-              {{ item.inbox_percent }}%
-            </div>
+              <div class="w-10 font-bold text-emerald-600">
+                {{ item.inbox_percent }}%
+              </div>
 
-            <div class="w-16 font-bold text-rose-500">
-              {{ item.spam_percent }}%
-            </div>
+              <div class="w-10 font-bold text-rose-500">
+                {{ item.spam_percent }}%
+              </div>
 
-            <div class="w-24">
-              <UBadge
-                :class="[
-                  'px-2 py-0.5 rounded-full text-xs font-medium border',
-                  item.warmup_status === 'active'
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-slate-50 text-slate-600 border-slate-200',
-                ]"
-                >{{ item.warmup_status }}</UBadge
-              >
-            </div>
+              <div class="w-10">
+                <UBadge
+                  :class="[
+                    'px-2 py-0.5 rounded-full text-xs font-medium border',
+                    item.warmup_status === 'active'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-slate-50 text-slate-600 border-slate-200',
+                  ]"
+                  >{{ item.warmup_status }}</UBadge
+                >
+              </div>
 
-            <DomainsDetailDrawer :inbox="item" />
+              <DomainsDetailDrawer :inbox="item" />
+            </div>
           </div>
         </template>
       </UCheckboxGroup>

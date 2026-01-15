@@ -4,7 +4,7 @@ export interface MailInbox {
   active_int: 1 | 0;
   domain: string;
   name: string;
-  local_part: string;
+  b: string;
   quota: number;
   messages: number;
   attributes: {
