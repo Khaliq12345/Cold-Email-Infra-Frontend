@@ -45,7 +45,7 @@
                 {{ item.warmup_status }}
               </span>
 
-              <DomainsDetailDrawer :mailbox="item" :domain="domain" />
+              <DomainsDetailDrawer :mailbox="item.value" :domain="domain" />
             </div>
           </div>
         </template>
