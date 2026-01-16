@@ -2,7 +2,7 @@
 <template>
   <DomainsDetailListHeader
     :selectedMails="value"
-    @refresh="getMailInboxs"
+    @refresh="getMailboxes"
     @selectall="toggleAll"
     :toggle="value.length === items.length"
   ></DomainsDetailListHeader>
@@ -18,41 +18,34 @@
         v-model="value"
         value-key="value"
         :items="items"
-        class="flex flex-col justify-center gap-2"
+        class="flex flex-col gap-1"
+        variant="card"
+        :ui="{ label: 'w-full' }"
       >
         <template #label="{ item }">
-          <div class="flex flex-col md:flex-row justify-between w-full gap-2">
-            <div class="md:flex-1 font-semibold truncate">
+          <div
+            class="flex flex-col md:grid md:grid-cols-2 items-start w-full gap-6"
+          >
+            <p class="text-sm font-medium truncate leading-none">
               {{ item.email }}
-            </div>
+            </p>
 
-            <div class="grid items-center grid-cols-4 md:grid-cols-5 gap-2">
-              <div class="w-10 font-medium text-nowrap">
-                {{ item.total_warmup_sent }}
-                <span class="text-[10px] uppercase">sent</span>
-              </div>
+            <div class="flex items-center justify-end gap-2 min-w-80px">
+              <span
+                class="h-2 w-2 rounded-full"
+                :class="
+                  item.warmup_status === 'ACTIVE'
+                    ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
+                    : 'bg-gray-500'
+                "
+              ></span>
+              <span
+                class="text-[10px] uppercase tracking-widest font-bold text-gray-400"
+              >
+                {{ item.warmup_status }}
+              </span>
 
-              <div class="w-10 font-bold text-emerald-600">
-                {{ item.inbox_percent }}%
-              </div>
-
-              <div class="w-10 font-bold text-rose-500">
-                {{ item.spam_percent }}%
-              </div>
-
-              <div class="w-10">
-                <UBadge
-                  :class="[
-                    'px-2 py-0.5 rounded-full text-xs font-medium border',
-                    item.warmup_status === 'active'
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-slate-50 text-slate-600 border-slate-200',
-                  ]"
-                  >{{ item.warmup_status }}</UBadge
-                >
-              </div>
-
-              <DomainsDetailDrawer :inbox="item" />
+              <DomainsDetailDrawer :mailbox="item" :domain="domain" />
             </div>
           </div>
         </template>
@@ -63,30 +56,19 @@
 
 <script setup lang="ts">
 import type { CheckboxGroupItem } from "@nuxt/ui";
-import type { MailInbox } from "~/types/inbox";
-const inboxes = ref<MailInbox[]>([]);
+
+const mailboxes = ref([]);
 
 const props = defineProps<{
   domain: string;
 }>();
 
-const records = [
-  {
-    email: "test@gmail.com",
-    user_id: "12345",
-    total_warmup_sent: 10,
-    inbox_percent: 90,
-    spam_percent: 10,
-    warmup_status: "active",
-  },
-];
-
 const items = computed<CheckboxGroupItem[]>(() =>
-  records.map((record, index) => ({
-    id: record.user_id,
-    label: record.email,
-    value: record,
-    ...record,
+  mailboxes.value.map((mailbox, index) => ({
+    id: mailbox.id,
+    label: mailbox.email,
+    value: mailbox,
+    ...mailbox,
   })),
 );
 const value = ref([]);
@@ -103,12 +85,11 @@ async function toggleAll() {
   }
 }
 
-async function getMailInboxs() {
+async function getMailboxes() {
   pending.value = true;
-
   try {
-    const response = await useApi(`/mailcow/mailboxes/${props.domain}`);
-    inboxes.value = response as MailInbox[];
+    const response = await useApi(`/plusvibe/mailboxes/${props.domain}`);
+    mailboxes.value = response.data;
   } catch (error) {
     console.error("Error fetching mailboxes:", error);
     toast.add({
@@ -121,7 +102,7 @@ async function getMailInboxs() {
   }
 }
 
-// onMounted(async () => {
-//   await getMailInboxs();
-// });
+onMounted(async () => {
+  await getMailboxes();
+});
 </script>
