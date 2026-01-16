@@ -67,7 +67,7 @@ const buttons = [
   },
   {
     label: "Stop  Warmup ",
-    icon: "i-lucide-stop",
+    icon: "i-lucide-circle-stop",
     color: "error",
     variant: "soft",
     onClick: async () => {

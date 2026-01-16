@@ -21,25 +21,35 @@
     <!-- HEADER -->
     <template #header>
       <div class="flex justify-between items-center border-b border-gray-200">
-        <h3 class="text-lg font-bold">{{ domain }}</h3>
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-bold">{{ domain }}</h3>
+          <UBadge
+            :color="mailbox.status === 'ACTIVE' ? 'success' : 'error'"
+            size="md"
+            variant="soft"
+          >
+            {{ mailbox.status === "ACTIVE" ? "Active" : "Inactive" }}
+          </UBadge>
+        </div>
         <UButton icon="i-lucide-x" variant="ghost" @click="open = false" />
       </div>
     </template>
 
     <template #body>
-      <p>{{ mailbox.value.id }}</p>
-      <!-- TODO: remplace with norman value -->
-      <!-- Part 1 info -->
-      <div class="grid grid-cols-2 gap-4">
-        <p class="font-semibold underline underline-offset-2">Current status</p>
-        <p>Active</p>
-
-        <p class="font-semibold underline underline-offset-2">Warmup Status</p>
-        <p>Disabled</p>
-
-        <p class="font-semibold underline underline-offset-2">Account</p>
-        <p>name</p>
+      <div class="flex justify-between items-center">
+        <h2>Name:</h2>
+        <p>
+          {{ props.mailbox.payload.name.last_name }}
+          {{ props.mailbox.payload.name.first_name }}
+        </p>
       </div>
+
+      <DomainsDetailDrawerWarmup :data="mailbox.payload.warmup" class="mb-2" />
+      <DomainsDetailDrawerAnalytics
+        :data="mailbox.payload.analytics"
+        class="mb-4"
+      />
+      <DomainsDetailDrawerChart :data="mailboxStatus?.emailAcc?.chart_data" />
     </template>
 
     <template #footer>
@@ -73,9 +83,10 @@ const props = defineProps({
   },
 });
 
+const toast = useToast();
 const open = ref(false);
 const activeMailbox = ref(null);
-const mailboxStatus = ref(null);
+const mailboxStatus = ref({});
 
 function showInfo(item) {
   activeMailbox.value = item;
@@ -98,15 +109,20 @@ function deleteInbox() {
 }
 
 const pending = ref(false);
+
 async function getMailboxWarmpUpStatus() {
   pending.value = true;
   try {
-    const response = await useApi(
-      `/plusvibe/warmup/stats?domain=${props.domain}&start_date=2026-01-15&end_date=2026-01-17&email_acc_id=${props.mailbox.value.id}`,
-    );
-    console.log(response);
+    const response = await useApi("/plusvibe/warmup/stats", {
+      params: {
+        domain: props.domain,
+        start_date: "2026-01-15",
+        end_date: "2026-01-17",
+        email_acc_id: props.mailbox.id,
+      },
+    });
     mailboxStatus.value = response.data;
-    console.log(mailboxStatus);
+    console.log("mailboxStatus:", mailboxStatus.value);
   } catch (error) {
     console.error("Error fetching mailboxes:", error);
     toast.add({
