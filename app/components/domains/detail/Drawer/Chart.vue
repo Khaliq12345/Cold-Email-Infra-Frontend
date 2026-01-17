@@ -3,25 +3,56 @@
     <BarChart
       :data="chartData"
       :categories="categories"
-      :height="250"
-      :y-axis="['sent', 'inbox', 'spam', 'promotion']"
-      :stacked="true"
-      :hide-legend="false"
-      :legend-position="'top'"
+      :height="height"
+      :y-axis="yAxis"
+      :stacked="stacked"
+      :hide-legend="hideLegend"
+      :legend-position="legendPosition"
       :x-formatter="dateFormatter"
       :y-formatter="numberFormatter"
-      :radius="4"
+      :radius="radius"
       class="w-full"
     />
   </div>
 </template>
 
 <script setup>
+import { dateFormatter, numberFormatter } from "@/utils/formatters";
+
 const props = defineProps({
   data: {
     type: Array,
     required: true,
     default: () => [],
+  },
+  height: {
+    type: Number,
+    default: 250,
+  },
+  stacked: {
+    type: Boolean,
+    default: true,
+  },
+  hideLegend: {
+    type: Boolean,
+    default: false,
+  },
+  legendPosition: {
+    type: String,
+    default: "top",
+  },
+  radius: {
+    type: Number,
+    default: 4,
+  },
+  colorScheme: {
+    type: Object,
+    default: () => ({
+      sent: "#3b82f6", // Blue-500
+      inbox: "#10b981", // Emerald-500
+      spam: "#ef4444", // Red-500
+      promotion: "#f59e0b", // Amber-500
+    }),
   },
 });
 
@@ -37,35 +68,27 @@ const chartData = computed(() => {
 });
 
 // Category configuration with modern colors
-const categories = {
+const categories = computed(() => ({
   sent: {
     name: "Sent",
-    color: "#3b82f6", // Blue-500
+    color: props.colorScheme.sent,
   },
   inbox: {
     name: "Inbox",
-    color: "#10b981", // Emerald-500
+    color: props.colorScheme.inbox,
   },
   spam: {
     name: "Spam",
-    color: "#ef4444", // Red-500
+    color: props.colorScheme.spam,
   },
   promotion: {
     name: "Promotion",
-    color: "#f59e0b", // Amber-500
+    color: props.colorScheme.promotion,
   },
-};
+}));
 
-// Formatters
-function dateFormatter(value) {
-  const date = new Date(value);
-  return date.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "short",
-  });
-}
-
-function numberFormatter(value) {
-  return value.toLocaleString();
-}
+// Y-axis keys
+const yAxis = computed(() => {
+  return Object.keys(categories.value);
+});
 </script>
