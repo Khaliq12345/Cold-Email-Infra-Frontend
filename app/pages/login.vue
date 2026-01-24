@@ -1,26 +1,54 @@
 <template>
-  <div>
+  <div
+    class="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center p-4"
+  >
     <ThemeToggle class="fixed top-4 right-4 z-50" />
-  </div>
-  <div class="flex min-h-screen flex-col items-center justify-center gap-1 p-2">
-    <div class="text-center space-y-2">
-      <h1 class="text-4xl">Existantly</h1>
-      <h2 class="text-sm">Login to your account</h2>
-    </div>
-    <UPageCard class="w-full max-w-md ring-0">
+
+    <UPageCard
+      class="w-full max-w-md ring-0 shadow-xl"
+      :ui="{
+        root: 'bg-white dark:bg-black border-none ring-0',
+        body: 'p-8',
+      }"
+    >
       <UAuthForm
         :schema="schema"
         :fields="fields"
-        @submit="onSubmit"
         :loading="loading"
-      />
+        title="Existantly"
+        :ui="{
+          header: 'text-center mb-6',
+          title:
+            'text-3xl font-bold tracking-tight text-gray-900 dark:text-white',
+          description: 'text-gray-500 dark:text-gray-400',
+          // Use 'white' or 'black' color for the button to avoid primary-blue/gray defaults
+          submit: { size: 'lg', block: true, color: 'black' },
+          // Force the form body itself to be transparent so no gray peaks through
+          body: 'dark:bg-transparent bg-white',
+        }"
+        @submit="onSubmit"
+      >
+        <template #leading>
+          <img
+            src="/logo.webp"
+            alt="Existantly Logo"
+            class="mx-auto h-12 w-auto mb-2"
+          />
+        </template>
+
+        <template #description>
+          Login to your account to manage your emails.
+        </template>
+
+        <template #footer>
+          <p class="text-xs text-gray-400">
+            By signing in, you agree to our
+            <ULink to="#" class="text-primary underline">Terms of Service</ULink
+            >.
+          </p>
+        </template>
+      </UAuthForm>
     </UPageCard>
-  </div>
-  <!-- termis & service -->
-  <div
-    class="fixed bottom-0 left-0 w-full text-xs text-center text-monoc-300 p-4"
-  >
-    <p>Terms of service and privacy policy</p>
   </div>
 </template>
 
