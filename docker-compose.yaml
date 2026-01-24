@@ -1,0 +1,13 @@
+services:
+  nuxt-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nuxt_frontend
+    restart: always
+    ports:
+      - "7000:3000"
+    env_file:
+      - .env
+    # environment:
+    #   - NODE_ENV=production
