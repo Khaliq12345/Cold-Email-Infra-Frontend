@@ -10,6 +10,10 @@ export const useAppStore = defineStore(
       return user.value;
     }
 
+    function getUsername(): string | undefined {
+      return user.value?.user.user_metadata.username;
+    }
+
     function setUser(newUser: User | null) {
       user.value = newUser;
       console.log("User set to:", user.value);
@@ -19,9 +23,9 @@ export const useAppStore = defineStore(
       setUser(null);
     }
 
-    return { user, getUser, setUser, logout };
+    return { user, getUser, setUser, logout, getUsername };
   },
   {
-    persist: true
-  }
+    persist: true,
+  },
 );

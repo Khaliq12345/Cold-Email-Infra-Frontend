@@ -13,7 +13,7 @@
     <UNavigationMenu :items="items" />
 
     <template #body>
-      <UNavigationMenu :items="items" orientation="vertical" class="-mx-2.5" />
+      <UNavigationMenu :items="items" orientation="vertical" class="mx-2.5" />
     </template>
 
     <template #right>
@@ -36,22 +36,22 @@ const route = useRoute();
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
-    label: "Domains",
+    label: "Domain",
     to: "/domains",
     icon: "i-lucide-book-open",
     active: route.path.startsWith("/domains"),
   },
   {
-    label: "Import",
-    icon: "i-lucide-import",
-    to: "/domains/import",
-    active: route.path.startsWith("/import"),
-  },
-  {
     label: "Purchase",
     icon: "i-heroicons-credit-card",
     to: "/registrar/register",
-    active: route.path.startsWith("/purchase"),
+    active: route.path.startsWith("/registrar"),
+  },
+  {
+    label: "Import",
+    icon: "i-lucide-import",
+    to: "/import",
+    active: route.path.startsWith("/import"),
   },
 ]);
 

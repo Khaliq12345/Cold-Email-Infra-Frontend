@@ -18,8 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({});
-
 import type { DomainInfo } from "~/types/domain";
 const { slug } = useRoute().params;
 

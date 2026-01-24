@@ -21,6 +21,40 @@
         </span>
       </UButton>
     </div>
+
+    <UModal
+      v-model:open="dialogState"
+      title="Number of Mailboxes"
+      description="Total number of mailboxes to add"
+    >
+      <template #content>
+        <p>{{ totalMailboxes }}</p>
+        <div class="p-5 flex flex-col justify-center">
+          <UFormField
+            label="Mailboxes Number"
+            help="Specify number of mailboxes to add"
+            required
+            class="mb-5"
+          >
+            <UInputNumber
+              v-model="mailboxesNumber"
+              class="w-full"
+              :max="100 - totalMailboxes"
+            />
+          </UFormField>
+          <UButton
+            @click="
+              () => {
+                addMailboxes(mailboxesNumber, domain);
+                dialogState = false;
+              }
+            "
+            block
+            >Add mailboxes</UButton
+          >
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
@@ -34,59 +68,31 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  domain: {
+    type: String,
+    required: true,
+  },
+  totalMailboxes: {
+    type: Number,
+    required: true,
+  },
 });
 
 const emits = defineEmits(["refresh", "selectall"]);
 
 const toast = useToast();
+const dialogState = ref(false);
+const mailboxesNumber = ref(0);
 
 // TODO: upadate onClick to pass directly api call using tools
 const buttons = [
   {
-    label: "Start Warmup",
+    label: "Add mailboxes",
     icon: "i-lucide-play",
     color: "primary",
     variant: "soft",
     onClick: async () => {
-      console.log(props.selectedMails);
-      const { success, response } = await startWarmup(props.selectedMails);
-      if (success) {
-        toast.add({
-          title: "Warmup Started",
-          description: "Warmup has been started successfully.",
-          color: "success",
-        });
-      } else {
-        toast.add({
-          title: "Warmup Failed",
-          description: response.message,
-          color: "error",
-        });
-      }
-    },
-  },
-  {
-    label: "Stop  Warmup ",
-    icon: "i-lucide-circle-stop",
-    color: "error",
-    variant: "soft",
-    onClick: async () => {
-      console.log(props.selectedMails);
-      const { success, response } = await stopWarmup(props.selectedMails);
-      if (success) {
-        toast.add({
-          title: "Warmup Stopped",
-          description: "Warmup has been stopped successfully.",
-          color: "success",
-        });
-        emits("refresh");
-      } else {
-        toast.add({
-          title: "Warmup Failed",
-          description: response.message,
-          color: "error",
-        });
-      }
+      dialogState.value = true;
     },
   },
   {

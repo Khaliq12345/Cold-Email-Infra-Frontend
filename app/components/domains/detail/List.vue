@@ -1,19 +1,19 @@
-<!-- components/InboxManager.vue -->
 <template>
   <DomainsDetailListHeader
     :selectedMails="value"
     @refresh="getMailboxes"
     @selectall="toggleAll"
     :toggle="value.length === items.length"
+    :domain="domain"
+    :total-mailboxes="items.length"
   ></DomainsDetailListHeader>
 
-  <div class="mt-2 p-2 border-t">
-    <!-- Skeleton loading -->
+  <div class="mt-2 border-t">
     <div v-if="pending" class="space-y-2 p-4">
       <USkeleton v-for="i in 5" :key="i" class="h-4 w-full" />
     </div>
-    <!-- Inbox list -->
-    <div v-else class="p-2 grid items-center grid-cols-1">
+
+    <div class="mt-2 mb-2" v-else>
       <UCheckboxGroup
         v-model="value"
         value-key="value"
@@ -23,31 +23,7 @@
         :ui="{ label: 'w-full' }"
       >
         <template #label="{ item }">
-          <div
-            class="flex flex-col md:grid md:grid-cols-2 items-start w-full gap-6"
-          >
-            <p class="text-sm font-medium truncate leading-none">
-              {{ item.email }}
-            </p>
-
-            <div class="flex items-center justify-end gap-2 min-w-80px">
-              <span
-                class="h-2 w-2 rounded-full"
-                :class="
-                  item.warmup_status === 'ACTIVE'
-                    ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
-                    : 'bg-gray-500'
-                "
-              ></span>
-              <span
-                class="text-[10px] uppercase tracking-widest font-bold text-gray-400"
-              >
-                {{ item.warmup_status }}
-              </span>
-
-              <DomainsDetailDrawer :mailbox="item.value" :domain="domain" />
-            </div>
-          </div>
+          <DomainsDetailListRow :item="{ item }"></DomainsDetailListRow>
         </template>
       </UCheckboxGroup>
     </div>
@@ -88,8 +64,9 @@ async function toggleAll() {
 async function getMailboxes() {
   pending.value = true;
   try {
-    const response = await useApi(`/plusvibe/mailboxes/${props.domain}`);
-    mailboxes.value = response.data;
+    const response = await useApi(`/mailboxes/${props.domain}`);
+    mailboxes.value = response;
+    console.log(mailboxes.value);
   } catch (error) {
     console.error("Error fetching mailboxes:", error);
     toast.add({

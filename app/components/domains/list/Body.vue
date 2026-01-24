@@ -5,7 +5,6 @@
     >
       <div class="flex-1">Domain</div>
       <div class="flex-1 text-center">Security Status</div>
-      <div class="flex-1 text-right">Actions</div>
     </div>
 
     <ul
@@ -52,21 +51,6 @@
               {{ type.toUpperCase() }}
             </UBadge>
           </div>
-
-          <div
-            class="flex-1 flex items-center justify-start md:justify-end gap-2"
-          >
-            <UButton
-              label="Configure"
-              color="black"
-              variant="outline"
-              size="md"
-              icon="i-heroicons-wrench-screwdriver"
-              class="rounded-full px-4"
-              :class="item.nameserver ? '' : 'border border-red-400'"
-              :disabled="!item.nameserver"
-            />
-          </div>
         </div>
       </li>
     </ul>
@@ -78,13 +62,14 @@
 
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
+
 const toast = useToast();
 const appStore = useAppStore();
 const domains = ref<DomainList>([]);
 async function getDomains() {
   try {
     const response = await useApi(
-      `mailcow/domains/${appStore.user?.user.user_metadata.username}`,
+      `domains/${appStore.user?.user.user_metadata.username}`,
       {},
     );
 
