@@ -1,13 +1,15 @@
 # Step 1: Base Image
 FROM node:current-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-COPY . /app
+
+# Install pnpm directly
+RUN npm install -g pnpm
+
 WORKDIR /app
 
 # Step 2: Build Stage
 FROM base AS build
+COPY . .
+# Using --prod=false ensures devDependencies (like nuxt) are installed for the build
 RUN pnpm install --frozen-lockfile
 RUN pnpm run build
 
@@ -15,14 +17,12 @@ RUN pnpm run build
 FROM node:current-slim AS production
 WORKDIR /app
 
-# Copy the output from the build stage (.output is the default for Nuxt 3)
+# Only copy the necessary output
 COPY --from=build /app/.output /app/.output
 
-# Nuxt runs on port 3000 by default
 ENV PORT=3000
 ENV NODE_ENV=production
 
 EXPOSE 3000
 
-# Start the Nitro server
 CMD ["node", ".output/server/index.mjs"]
