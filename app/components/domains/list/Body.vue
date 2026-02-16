@@ -4,7 +4,7 @@
       class="hidden md:flex items-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 dark:border-gray-800"
     >
       <div class="flex-1">Domain</div>
-      <div class="flex-1 text-center">Security Status</div>
+      <div class="flex-1 text-center">Configuration Status</div>
     </div>
 
     <ul
@@ -41,14 +41,14 @@
 
           <div class="flex-1 flex flex-wrap md:justify-center gap-2">
             <UBadge
-              v-for="type in ['ptr', 'dkim', 'dmarc', 'basic_dns'] as const"
-              :key="type"
+              v-for="badge in getBadgeStatus(item)"
+              :key="badge.label"
               variant="subtle"
               size="md"
-              :color="item[type] ? 'success' : 'error'"
+              :color="badge.active ? 'success' : 'error'"
               class="font-mono px-2 py-0.5"
             >
-              {{ type.toUpperCase() }}
+              {{ badge.label.toUpperCase() }}
             </UBadge>
           </div>
         </div>
@@ -66,12 +66,22 @@ import type { DomainList } from "~/types/domain";
 const toast = useToast();
 const appStore = useAppStore();
 const domains = ref<DomainList>([]);
+
+const getBadgeStatus = (item: any) => {
+  return [
+    { label: "dns", active: !!item.basic_dns },
+    { label: "ns", active: !!item.nameserver },
+    { label: "dkim", active: !!item.is_dkim_set },
+    {
+      label: "mailserver",
+      active: !!(item.mailcow_domain_created && item.mailcow_relay_set),
+    },
+  ];
+};
+
 async function getDomains() {
   try {
-    const response = await useApi(
-      `domains/${appStore.user?.user.user_metadata.username}`,
-      {},
-    );
+    const response = await useApi(`domains`, {});
 
     domains.value = response as DomainList;
     console.log("domains: ", domains.value);

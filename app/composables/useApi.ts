@@ -5,6 +5,7 @@ export const useApi = async (url: string, opts = {}) => {
   const appStore = useAppStore();
 
   console.log(config.public.apiUrl);
+  console.log(appStore.user);
 
   return await $fetch(url, {
     baseURL: config.public.apiUrl,

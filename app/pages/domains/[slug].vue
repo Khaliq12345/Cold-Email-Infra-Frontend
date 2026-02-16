@@ -27,7 +27,7 @@ const domain = ref<DomainInfo | null>(null);
 async function getDomain() {
   try {
     console.log(slug);
-    const response = await useApi(`/mailcow/domain/${slug}`, {});
+    const response = await useApi(`/mailboxes/${slug}`, {});
     domain.value = response as DomainInfo;
   } catch (error) {
     toast.add({

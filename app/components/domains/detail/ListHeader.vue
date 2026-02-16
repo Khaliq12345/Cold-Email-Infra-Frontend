@@ -21,40 +21,14 @@
         </span>
       </UButton>
     </div>
-
-    <UModal
+  </div>
+  <div>
+    <MailboxModal
       v-model:open="dialogState"
-      title="Number of Mailboxes"
-      description="Total number of mailboxes to add"
-    >
-      <template #content>
-        <p>{{ totalMailboxes }}</p>
-        <div class="p-5 flex flex-col justify-center">
-          <UFormField
-            label="Mailboxes Number"
-            help="Specify number of mailboxes to add"
-            required
-            class="mb-5"
-          >
-            <UInputNumber
-              v-model="mailboxesNumber"
-              class="w-full"
-              :max="100 - totalMailboxes"
-            />
-          </UFormField>
-          <UButton
-            @click="
-              () => {
-                addMailboxes(mailboxesNumber, domain);
-                dialogState = false;
-              }
-            "
-            block
-            >Add mailboxes</UButton
-          >
-        </div>
-      </template>
-    </UModal>
+      :total-mailboxes="totalMailboxes"
+      :domain="domain"
+      @refresh="$emit('refresh')"
+    />
   </div>
 </template>
 
@@ -79,19 +53,16 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["refresh", "selectall"]);
-
 const toast = useToast();
 const dialogState = ref(false);
-const mailboxesNumber = ref(0);
 
-// TODO: upadate onClick to pass directly api call using tools
 const buttons = [
   {
     label: "Add mailboxes",
     icon: "i-lucide-play",
     color: "primary",
     variant: "soft",
-    onClick: async () => {
+    onClick: () => {
       dialogState.value = true;
     },
   },
@@ -101,7 +72,6 @@ const buttons = [
     color: "error",
     variant: "outline",
     onClick: async () => {
-      console.log(props.selectedMails);
       const { success, response } = await removeMails(props.selectedMails);
       if (success) {
         toast.add({

@@ -1,72 +1,60 @@
 <template>
-  <div v-if="domainInfo">
+  <div>
+    <!-- Header Section -->
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
     >
       <div class="flex items-center gap-3">
         <div
+          v-if="domainInfo"
           class="w-14 h-14 rounded-lg bg-blue-500 flex items-center justify-center"
         >
           <Icon name="i-lucide-globe" class="text-white p-2" size="30" />
         </div>
-        <div>
+        <USkeleton v-else class="w-14 h-14 rounded-lg" />
+
+        <div v-if="domainInfo">
           <h1 class="text-xl font-bold">
-            {{ domainInfo?.domain_name || name }}
+            {{ domainInfo.domain_name || name }}
           </h1>
           <p class="text-sm text-gray-600 dark:text-gray-400">
-            {{ domainInfo?.description }}
+            {{ domainInfo.description }}
           </p>
         </div>
-      </div>
-      <div class="flex gap-2">
-        <UButton variant="outline" size="sm">Settings</UButton>
-        <UButton color="primary" size="sm">Manage</UButton>
-      </div>
-    </div>
-    <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 p-2">
-      <div class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
-        <p class="font-medium text-sm">
-          {{ domainInfo?.active ? "Active" : "Inactive" }}
-        </p>
-      </div>
-      <div class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Messages</p>
-        <p class="font-medium text-sm">{{ domainInfo?.msgs_total || "0" }}</p>
-      </div>
-      <div class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Mailboxes Left</p>
-        <p class="font-medium text-sm">{{ domainInfo?.mboxes_left || "0" }}</p>
-      </div>
-      <div class="text-center">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Created</p>
-        <p class="font-medium text-sm">{{ formatDate(domainInfo?.created) }}</p>
-      </div>
-    </div>
-  </div>
-  <div v-else>
-    <div
-      class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
-    >
-      <div class="flex items-center gap-3">
-        <USkeleton class="w-14 h-14 rounded-lg" />
-        <div class="space-y-2">
+        <div v-else class="space-y-2">
           <USkeleton class="h-6 w-48" />
           <USkeleton class="h-4 w-64" />
         </div>
       </div>
 
       <div class="flex gap-2">
-        <USkeleton class="h-8 w-20 rounded-md" />
-        <USkeleton class="h-8 w-20 rounded-md" />
+        <template v-if="domainInfo">
+          <UButton variant="outline" size="sm">Settings</UButton>
+          <UButton color="primary" size="sm">Manage</UButton>
+        </template>
+        <template v-else>
+          <USkeleton class="h-8 w-20 rounded-md" />
+          <USkeleton class="h-8 w-20 rounded-md" />
+        </template>
       </div>
     </div>
 
-    <div class="grid grid-cols-4 sm:grid-cols-4 gap-2 p-2">
-      <div v-for="i in 4" :key="i" class="text-center space-y-1">
-        <USkeleton class="h-4 w-16 mx-auto" />
-        <USkeleton class="h-5 w-12 mx-auto" />
-      </div>
+    <!-- Stats Section -->
+    <div class="grid grid-cols-4 gap-2 p-2">
+      <template v-if="domainInfo">
+        <div v-for="stat in stats" :key="stat.label" class="text-center">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ stat.label }}
+          </p>
+          <p class="font-medium text-sm">{{ stat.value }}</p>
+        </div>
+      </template>
+      <template v-else>
+        <div v-for="i in 4" :key="i" class="text-center space-y-1">
+          <USkeleton class="h-4 w-16 mx-auto" />
+          <USkeleton class="h-5 w-12 mx-auto" />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -79,9 +67,28 @@ interface Props {
   domainInfo?: DomainInfo | null;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
-function formatDate(dateStr?: string) {
+const stats = computed(() => [
+  {
+    label: "Status",
+    value: props.domainInfo?.active ? "Active" : "Inactive",
+  },
+  {
+    label: "Messages",
+    value: props.domainInfo?.msgs_total || "0",
+  },
+  {
+    label: "Mailboxes Left",
+    value: props.domainInfo?.mboxes_left || "0",
+  },
+  {
+    label: "Created",
+    value: formatDate(props.domainInfo?.created),
+  },
+]);
+
+function formatDate(dateStr?: string): string {
   if (!dateStr) return "N/A";
   return new Date(dateStr).toLocaleDateString();
 }
