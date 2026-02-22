@@ -15,43 +15,42 @@
         :schema="schema"
         :fields="fields"
         :loading="loading"
-        title="Existantly"
+        title="Create an Account"
+        align="bottom"
+        icon="i-heroicons-user-plus"
         :ui="{
           header: 'text-center mb-6',
           title:
             'text-3xl font-extrabold tracking-tight text-gray-900 dark:text-zinc-50',
           description: 'text-gray-500 dark:text-zinc-400',
-          // Dynamic button color: black in light mode, primary/white in dark mode
           submit: {
             size: 'lg',
             block: true,
             class:
               'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-200 transition-colors',
           },
-          body: 'space-y-4',
         }"
         @submit="onSubmit"
       >
-        <template #leading>
-          <img
-            src="/logo.webp"
-            alt="Existantly Logo"
-            class="mx-auto h-12 w-auto mb-2 dark:brightness-110"
-          />
-        </template>
-
         <template #description>
-          Login to your account to manage your emails.
+          Sign up today to start managing your email domains.
         </template>
 
         <template #footer>
-          <div class="text-center mt-4">
-            <p class="text-xs text-gray-400 dark:text-zinc-500">
-              By signing in, you agree to our
+          <div class="text-center space-y-4">
+            <p class="text-sm text-gray-600 dark:text-zinc-400">
+              Already have an account?
               <ULink
-                to="#"
-                class="text-primary-500 hover:text-primary-600 underline"
-                >Terms of Service</ULink
+                to="/login"
+                class="text-primary-500 font-semibold hover:underline"
+                >Login</ULink
+              >
+            </p>
+            <p class="text-xs text-gray-400 dark:text-zinc-500">
+              By creating an account, you agree to our
+              <ULink to="#" class="text-primary-500 underline">Terms</ULink> &
+              <ULink to="#" class="text-primary-500 underline"
+                >Privacy Policy</ULink
               >.
             </p>
           </div>
@@ -65,33 +64,44 @@
 definePageMeta({ skipAuth: true, layout: false });
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
-import type { User } from "~/types/user";
 
 const toast = useToast();
-const loading: Ref<boolean> = ref(false);
+const loading = ref(false);
 
 const fields: AuthFormField[] = [
+  {
+    name: "firstname",
+    label: "First Name",
+    placeholder: "John",
+    required: true,
+  },
+  {
+    name: "lastname",
+    label: "Last Name",
+    placeholder: "Doe",
+    required: true,
+  },
   {
     name: "email",
     type: "email",
     label: "Email",
-    placeholder: "Enter your email",
+    placeholder: "john@example.com",
     required: true,
   },
   {
     name: "password",
     label: "Password",
     type: "password",
-    placeholder: "Enter your password",
+    placeholder: "Choose a strong password",
     required: true,
   },
 ];
 
 const schema = z.object({
-  email: z.email("Invalid email"),
-  password: z
-    .string("Password is required")
-    .min(4, "Must be at least 8 characters"),
+  firstname: z.string().min(2, "First name is required"),
+  lastname: z.string().min(2, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type Schema = z.output<typeof schema>;
@@ -99,31 +109,28 @@ type Schema = z.output<typeof schema>;
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
     loading.value = true;
-    const response = await useApi("/auth/login", {
+    await useApi("/auth/signup", {
       method: "POST",
-      body: { email: payload.data.email, password: payload.data.password },
+      body: payload.data,
     });
+
     toast.add({
-      title: "Success",
-      description: "Login successful!",
-      color: "success",
+      title: "Account Created",
+      description: "Welcome to Existantly! Redirecting to login...",
+      color: "green",
     });
-    const appStore = useAppStore();
-    console.log("login response: ", response);
-    appStore.setUser(response as User);
-    await navigateTo("/domains");
-  } catch (error) {
-    console.log("LOGIN ERROR ", error);
+
+    // Short delay so they can see the toast
+    setTimeout(() => navigateTo("/login"), 1500);
+  } catch (error: any) {
     toast.add({
-      title: "Error while login",
-      description: "Please check your credentials",
-      color: "error",
+      title: "Signup Failed",
+      description:
+        error?.data?.message || "There was an error creating your account.",
+      color: "red",
     });
   } finally {
     loading.value = false;
   }
 }
-onMounted(() => {
-  if (useAppStore().user) navigateTo("/domains");
-});
 </script>
