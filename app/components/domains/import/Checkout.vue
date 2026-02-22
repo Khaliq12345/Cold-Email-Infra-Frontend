@@ -6,9 +6,11 @@
     />
     <div>
       <h2 class="text-base font-semibold text-gray-900 dark:text-white">
-        Domain available
+        Domain(s) available
       </h2>
-      <p class="text-sm text-gray-500 font-mono">{{ domain }}</p>
+      <p class="text-sm text-gray-500 font-mono">
+        {{ domains.join(", ") }}
+      </p>
     </div>
   </div>
 
@@ -25,7 +27,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  domain: string;
+  domains: string[];
 }>();
 
 const appStore = useAppStore();
@@ -37,14 +39,13 @@ const pending = ref(false);
 async function createPaymentLink() {
   pending.value = true;
   try {
-    const response = await useApi(`/stripe/create/payment-link`, {
+    const response = await useApi(`/payments/create-link`, {
       method: "POST",
       body: {
-        domain: props.domain,
+        domains: props.domains,
         username: appStore.getUsername(),
       },
     });
-    console.log(response);
     // redirect to the payment page
     await navigateTo(response.url, {
       external: true,

@@ -1,17 +1,17 @@
 <template>
   <div class="w-full mx-auto md:max-w-lg p-3">
-    <UForm @submit.prevent="checkDomain" class="space-y-4">
+    <UForm @submit.prevent="checkDomains" class="space-y-4">
       <UFormField
-        label="Domain Name"
-        description="Enter the domain you'd like to point to our servers."
+        label="Domain Names"
+        description="Enter one or more domains (one per line or separated by commas)."
         :error="errorMessage"
       >
-        <div class="flex items-center gap-2">
-          <UInput
-            v-model="domain"
-            placeholder="example.com"
+        <div class="flex flex-col gap-2">
+          <UTextarea
+            v-model="rawInput"
+            placeholder="example.com&#10;test.io"
             size="xl"
-            clearable
+            :rows="5"
             :disabled="isLoading"
             class="flex-1"
             icon="i-heroicons-globe-alt"
@@ -20,61 +20,94 @@
             type="submit"
             color="primary"
             size="xl"
+            block
             :loading="isLoading"
-            :disabled="!domainTrimmed"
-            label="Import"
+            :disabled="!rawInput.trim()"
+            label="Bulk Import & Verify"
           />
         </div>
       </UFormField>
+
+      <div v-if="results.length > 0" class="mt-4 space-y-2">
+        <p class="text-sm font-medium">Results:</p>
+        <div
+          v-for="res in results"
+          :key="res.domain"
+          class="flex justify-between p-2 border rounded text-sm"
+        >
+          <span>{{ res.domain }}</span>
+          <span v-if="res.status === 'checking'" class="text-gray-400"
+            >Checking...</span
+          >
+          <span
+            v-else-if="res.status === 'valid'"
+            class="text-green-500 font-bold"
+            >✓ Registered</span
+          >
+          <span v-else class="text-red-500">✗ Not Found</span>
+        </div>
+      </div>
     </UForm>
   </div>
 </template>
 
 <script lang="ts" setup>
-const isValid = defineModel("isValid");
-const domain = defineModel("domain");
+const isValid = defineModel("isValid"); // true if at least one is valid
+const domainsList = defineModel("domains"); // Should probably be string[] now
 
+const rawInput = ref("");
 const isLoading = ref(false);
 const errorMessage = ref("");
 
-// Clean validation check
-const domainTrimmed = computed(() => domain.value?.trim());
+interface DomainResult {
+  domain: string;
+  status: "checking" | "valid" | "invalid";
+}
+const results = ref<DomainResult[]>([]);
 
-async function checkDomain() {
-  if (!domainTrimmed.value) {
-    errorMessage.value = "Please enter a domain name.";
+async function checkDomains() {
+  // 1. Parse input: split by newlines or commas, then trim and remove empty strings
+  const domainArray = rawInput.value
+    .split(/[\n,]+/)
+    .map((d) => d.trim())
+    .filter((d) => d.length > 0);
+
+  if (domainArray.length === 0) {
+    errorMessage.value = "Please enter at least one domain.";
     return;
   }
 
-  // Basic regex to avoid checking nonsense strings
-  const domainRegex =
-    /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
-  if (!domainRegex.test(domainTrimmed.value)) {
-    errorMessage.value =
-      "Please enter a valid domain format (e.g., example.com).";
-    return;
-  }
-
+  // Reset states
   errorMessage.value = "";
   isLoading.value = true;
   isValid.value = false;
+  results.value = domainArray.map((d) => ({ domain: d, status: "checking" }));
 
-  try {
-    const data = await useApi(`/domains/status/${domainTrimmed.value}`);
+  const verifiedDomains: string[] = [];
 
-    // If API confirms availability/validity
-    if (!data.status.available) {
-      isValid.value = true;
-      domain.value = domainTrimmed.value;
-      console.log(domain.value, isValid.value);
-    } else {
-      errorMessage.value = "This domain is not registered";
+  // 2. Check one at a time
+  for (const item of results.value) {
+    try {
+      const data = await useApi(
+        `/domains/check-availability?domain=${item.domain}`,
+      );
+
+      // logic: available === false means it exists (is registered)
+      if (!data.available) {
+        item.status = "valid";
+        verifiedDomains.push(item.domain);
+      } else {
+        item.status = "invalid";
+      }
+    } catch (err) {
+      item.status = "invalid";
     }
-  } catch (err: any) {
-    errorMessage.value =
-      err?.data?.message || "Could not verify domain. Try again.";
-  } finally {
-    isLoading.value = false;
   }
+
+  // Update models
+  domainsList.value = verifiedDomains;
+  isValid.value = verifiedDomains.length > 0;
+  isLoading.value = false;
+  console.log(isValid, " IS VALID");
 }
 </script>

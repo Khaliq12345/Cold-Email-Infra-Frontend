@@ -99,9 +99,11 @@ const getCheckout = async () => {
   pending.value = true;
   try {
     const response = await useApi(
-      `/stripe/checkout/session/${route.params.checkoutId}`,
+      `/payments/confirm/${route.params.checkoutId}`,
     );
-    isValid.value = response.isValid;
+    if (response.message == "Domain activated successfully") {
+      isValid.value = true;
+    }
   } catch (error) {
     console.error("Payment verification failed:", error);
     isValid.value = false;

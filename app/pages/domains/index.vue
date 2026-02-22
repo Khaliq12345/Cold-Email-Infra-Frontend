@@ -1,14 +1,12 @@
 <template>
-  <div class="p-2 sm:p-4 lg:p-6">
-    <div class="grid grid-cols-1 gap-6">
-      <UContainer>
-        <DomainsCard />
-      </UContainer>
+  <div class="grid grid-cols-1 gap-6 pt-5">
+    <UContainer>
+      <DomainsCard />
+    </UContainer>
 
-      <UContainer>
-        <DomainsList />
-      </UContainer>
-    </div>
+    <UContainer>
+      <DomainsList />
+    </UContainer>
   </div>
 </template>
 

@@ -5,7 +5,7 @@
       color="primary"
       variant="soft"
       title="Action Required"
-      description="To connect your domain, log in to your domain registrar and replace your current nameservers with the ones below."
+      description="To connect your domain(s), log in to your domain registrar and replace your current nameservers with the ones below."
     />
 
     <div class="space-y-2">

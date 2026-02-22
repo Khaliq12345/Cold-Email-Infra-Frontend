@@ -52,7 +52,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["refresh", "selectall"]);
+const emits = defineEmits(["refresh", "selectall", "download"]);
 const toast = useToast();
 const dialogState = ref(false);
 
@@ -64,6 +64,15 @@ const buttons = [
     variant: "soft",
     onClick: () => {
       dialogState.value = true;
+    },
+  },
+  {
+    label: "Download",
+    icon: "i-lucide-download",
+    color: "primary",
+    variant: "soft",
+    onClick: () => {
+      emits("download");
     },
   },
   {

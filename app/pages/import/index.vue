@@ -4,10 +4,10 @@
     <DomainsImportHeader />
 
     <!-- Step 1 -->
-    <DomainsImportForm v-model:is-valid="isValid" v-model:domain="domain" />
+    <DomainsImportForm v-model:is-valid="isValid" v-model:domains="domains" />
 
     <DomainsImportInstruction
-      :domain="domain"
+      :domains="domains"
       :is-valid="isValid"
     ></DomainsImportInstruction>
   </div>
@@ -15,5 +15,5 @@
 
 <script lang="ts" setup>
 const isValid = ref<boolean>(false);
-const domain = ref<string>("");
+const domains = ref<string[]>([]);
 </script>

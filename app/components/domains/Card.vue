@@ -1,35 +1,53 @@
 <template>
   <UCard class="relative overflow-hidden">
     <template #header>
-      <div class="blur-[3px] select-none pointer-events-none">
-        <DomainsChartHeader />
-      </div>
+      <DomainsChartHeader
+        :total_domains="totalDomain"
+        :total_mailboxes="totalMailboxes"
+      />
     </template>
 
     <template #default>
-      <div
-        class="absolute inset-0 z-20 flex items-center justify-center bg-white/50 dark:bg-gray-900/60 backdrop-blur-[2px]"
-      >
-        <div class="flex flex-col items-center gap-2">
-          <UIcon
-            name="i-heroicons-clock"
-            class="w-8 h-8 text-primary-500 animate-pulse"
-          />
-          <span
-            class="text-sm font-bold uppercase tracking-widest text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-gray-700"
-          >
-            Coming Soon
-          </span>
-        </div>
-      </div>
-
-      <div class="blur-[3px] select-none pointer-events-none">
-        <DomainsChartBody />
-      </div>
+      <DomainsChartBody :domainStats="domainStats" :pending="pending" />
     </template>
   </UCard>
 </template>
 
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
+
+const appStore = useAppStore();
+const toast = useToast();
+
+const domainStats = ref([]);
+const totalDomain = ref(0);
+const totalMailboxes = ref(0);
+const pending = ref(false);
+
+//load domain stats
+async function loadDomainStats() {
+  pending.value = true;
+  try {
+    const response = await useApi(`/domains/stats/${appStore.getUsername()}`, {
+      method: "GET",
+    });
+    console.log(response);
+    domainStats.value = response.stats;
+    totalDomain.value = response.total_domains;
+    totalMailboxes.value = response.total_mailboxes;
+  } catch (error) {
+    console.error("Error loading domain stats:", error);
+    toast.add({
+      title: "Error",
+      description: "Failed to load domain stats",
+      color: "error",
+    });
+  } finally {
+    pending.value = false;
+  }
+}
+
+onMounted(async () => {
+  await loadDomainStats();
+});
 </script>

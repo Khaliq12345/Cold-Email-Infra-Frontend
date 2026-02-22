@@ -7,13 +7,20 @@ export const useApi = async (url: string, opts = {}) => {
   console.log(config.public.apiUrl);
   console.log(appStore.user);
 
-  return await $fetch(url, {
-    baseURL: config.public.apiUrl,
-    headers: {
-      Authorization: appStore?.user?.access_token
-        ? `Bearer ${appStore?.user?.access_token}`
-        : "",
-    },
-    ...opts,
-  });
+  try {
+    return await $fetch(url, {
+      baseURL: config.public.apiUrl,
+      headers: {
+        Authorization: appStore?.user?.access_token
+          ? `Bearer ${appStore?.user?.access_token}`
+          : "",
+      },
+      ...opts,
+    });
+  } catch (error: any) {
+    if (error.status === 401) {
+      appStore.setUser(null);
+      navigateTo("/login");
+    }
+  }
 };

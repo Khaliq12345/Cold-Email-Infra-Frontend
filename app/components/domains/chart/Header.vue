@@ -1,35 +1,52 @@
 <template>
   <div
-    class="w-full flex flex-col md:flex-row items-center justify-between gap-2"
+    class="w-full flex flex-col md:flex-row items-center justify-between gap-4 py-2"
   >
-    <!-- left -->
-    <div>
-      <h3 class="lg:text-2xl font-bold text-nowrap">All domains - Default</h3>
-      <p class="text-monoc-400">Date range - End range</p>
+    <div class="w-full md:w-auto">
+      <h3 class="text-xl lg:text-2xl font-bold text-nowrap">
+        All domains - Default
+      </h3>
+      <p class="text-gray-400 text-sm">
+        Overview of your connected infrastructure
+      </p>
     </div>
-    <!-- right -->
-    <div class="flex items-center gap-2">
+
+    <div
+      class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900/50 p-1 rounded-lg"
+    >
       <div class="p-2 text-right">
-        <h4 class="text-monoc-400">Total sent</h4>
-        <p class="text-sm font-bold">100,000</p>
+        <h4 class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Domains
+        </h4>
+        <p class="text-sm md:text-base font-bold text-primary-600">
+          {{ formatNumber(total_domains) }}
+        </p>
       </div>
 
-      <!-- separator -->
-      <div class="h-6 w-0.5 bg-monoc-400"></div>
+      <div class="h-8 w-px bg-gray-200 dark:bg-gray-700"></div>
+
       <div class="p-2 text-right">
-        <h4 class="text-monoc-400">Outbound</h4>
-        <p class="text-sm font-bold">100,000</p>
-      </div>
-      <!-- separator -->
-      <div class="h-6 w-0.5 bg-monoc-400"></div>
-      <div class="p-2 text-right">
-        <h4 class="text-monoc-400">Warmup</h4>
-        <p class="text-sm font-bold">100,000</p>
+        <h4 class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Mailboxes
+        </h4>
+        <p class="text-sm md:text-base font-bold text-primary-600">
+          {{ formatNumber(total_mailboxes) }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+const props = defineProps<{
+  total_domains: number;
+  total_mailboxes: number;
+}>();
 
-<style></style>
+/**
+ * Formats numbers with commas (e.g., 10000 -> 10,000)
+ */
+const formatNumber = (num: number) => {
+  return new Intl.NumberFormat().format(num || 0);
+};
+</script>

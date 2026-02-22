@@ -1,9 +1,9 @@
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 pt-5">
     <UContainer>
       <UCard>
         <template #header>
-          <DomainsDetailHeader :name="slug as string" :domain-info="domain" />
+          <DomainsDetailHeader :domain="slug as string" />
         </template>
         <template #default>
           <DomainsDetailChart />
@@ -18,28 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { DomainInfo } from "~/types/domain";
 const { slug } = useRoute().params;
-
-const toast = useToast();
-const domain = ref<DomainInfo | null>(null);
-
-async function getDomain() {
-  try {
-    console.log(slug);
-    const response = await useApi(`/mailboxes/${slug}`, {});
-    domain.value = response as DomainInfo;
-  } catch (error) {
-    toast.add({
-      title: "Error",
-      description: error as string,
-      color: "error",
-    });
-  }
-}
-onMounted(async () => {
-  await getDomain();
-});
 </script>
 
 <style></style>

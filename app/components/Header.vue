@@ -42,16 +42,16 @@ const items = computed<NavigationMenuItem[]>(() => [
     active: route.path.startsWith("/domains"),
   },
   {
-    label: "Purchase",
-    icon: "i-heroicons-credit-card",
-    to: "/registrar/register",
-    active: route.path.startsWith("/registrar"),
-  },
-  {
     label: "Import",
     icon: "i-lucide-import",
     to: "/import",
     active: route.path.startsWith("/import"),
+  },
+  {
+    label: "Settings",
+    icon: "i-lucide-settings",
+    to: "/settings",
+    active: route.path.startsWith("/settings"),
   },
 ]);
 

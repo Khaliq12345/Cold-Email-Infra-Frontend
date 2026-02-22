@@ -1,47 +1,34 @@
 <template>
+  <!-- Important Banner, to tell the user to set their plusvibe workspace -->
+  <template v-if="domainDetails">
+    <UBanner
+      color="warning"
+      icon="i-lucide-info"
+      title="Plusvibe Workspace is not set, kindly set it up with the <<Link Plusvibe>> Button below"
+      v-if="!domainDetails.plusvibe_workspace"
+    />
+  </template>
+
   <div>
-    <!-- Header Section -->
+    <!-- Header Sections -->
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4"
     >
-      <div class="flex items-center gap-3">
-        <div
-          v-if="domainInfo"
-          class="w-14 h-14 rounded-lg bg-blue-500 flex items-center justify-center"
-        >
-          <Icon name="i-lucide-globe" class="text-white p-2" size="30" />
-        </div>
-        <USkeleton v-else class="w-14 h-14 rounded-lg" />
+      <!-- Left section with title and icon -->
+      <DomainsDetailHeaderLeft
+        :domain-details="domainDetails"
+      ></DomainsDetailHeaderLeft>
 
-        <div v-if="domainInfo">
-          <h1 class="text-xl font-bold">
-            {{ domainInfo.domain_name || name }}
-          </h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            {{ domainInfo.description }}
-          </p>
-        </div>
-        <div v-else class="space-y-2">
-          <USkeleton class="h-6 w-48" />
-          <USkeleton class="h-4 w-64" />
-        </div>
-      </div>
-
-      <div class="flex gap-2">
-        <template v-if="domainInfo">
-          <UButton variant="outline" size="sm">Settings</UButton>
-          <UButton color="primary" size="sm">Manage</UButton>
-        </template>
-        <template v-else>
-          <USkeleton class="h-8 w-20 rounded-md" />
-          <USkeleton class="h-8 w-20 rounded-md" />
-        </template>
-      </div>
+      <!-- Right section with action buttons -->
+      <DomainsDetailHeaderRight
+        :domain-details="domainDetails"
+        :domain="domain"
+      ></DomainsDetailHeaderRight>
     </div>
 
     <!-- Stats Section -->
     <div class="grid grid-cols-4 gap-2 p-2">
-      <template v-if="domainInfo">
+      <template v-if="domainDetails">
         <div v-for="stat in stats" :key="stat.label" class="text-center">
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ stat.label }}
@@ -61,30 +48,29 @@
 
 <script setup lang="ts">
 import type { DomainInfo } from "~/types/domain";
+import type { SelectItem } from "@nuxt/ui";
 
-interface Props {
-  name: string | null;
-  domainInfo?: DomainInfo | null;
+interface props {
+  domain: string | null;
 }
 
-const props = defineProps<Props>();
+const props = defineProps<props>();
+const domainDetails = ref();
+const isOpen = ref(true);
+const toast = useToast();
 
 const stats = computed(() => [
   {
     label: "Status",
-    value: props.domainInfo?.active ? "Active" : "Inactive",
-  },
-  {
-    label: "Messages",
-    value: props.domainInfo?.msgs_total || "0",
+    value: domainDetails.paid ? "Active" : "Inactive",
   },
   {
     label: "Mailboxes Left",
-    value: props.domainInfo?.mboxes_left || "0",
+    value: "100",
   },
   {
     label: "Created",
-    value: formatDate(props.domainInfo?.created),
+    value: formatDate(domainDetails?.created),
   },
 ]);
 
@@ -92,4 +78,25 @@ function formatDate(dateStr?: string): string {
   if (!dateStr) return "N/A";
   return new Date(dateStr).toLocaleDateString();
 }
+
+// Get Domain Details
+async function getDomainDetails() {
+  try {
+    const response = await useApi(`domains/${props.domain}`, {
+      method: "GET",
+    });
+    domainDetails.value = response;
+  } catch (error) {
+    console.error("Error loading domain details:", error);
+    toast.add({
+      title: "Error",
+      description: "Failed to load domain details",
+      color: "error",
+    });
+  }
+}
+
+onMounted(async () => {
+  await getDomainDetails();
+});
 </script>

@@ -6,7 +6,7 @@
   >
     <div v-if="isValid" class="mt-8 max-w-lg mx-auto p-3">
       <UCard shadow="sm" :ui="{ body: { padding: 'sm:p-6' } }">
-        <DomainsImportCheckout :domain="domain"></DomainsImportCheckout>
+        <DomainsImportCheckout :domains="domains"></DomainsImportCheckout>
         <DomainsImportNameServer></DomainsImportNameServer>
       </UCard>
     </div>
@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  domain: string | null;
+  domains: string[];
   isValid: boolean; // Corrected spelling from isValide
 }>();
 </script>
