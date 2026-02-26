@@ -11,7 +11,7 @@
             v-model="rawInput"
             placeholder="example.com&#10;test.io"
             size="xl"
-            :rows="5"
+            :rows="10"
             :disabled="isLoading"
             class="flex-1"
             icon="i-heroicons-globe-alt"
@@ -71,6 +71,12 @@ async function checkDomains() {
     .split(/[\n,]+/)
     .map((d) => d.trim())
     .filter((d) => d.length > 0);
+
+  // NEW: Check if domain count exceeds 10
+  if (domainArray.length > 10) {
+    errorMessage.value = "You can only check up to 10 domains at a time.";
+    return;
+  }
 
   if (domainArray.length === 0) {
     errorMessage.value = "Please enter at least one domain.";
