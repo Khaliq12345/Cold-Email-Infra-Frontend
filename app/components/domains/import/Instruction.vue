@@ -7,7 +7,7 @@
     <div v-if="isValid" class="mt-8 max-w-lg mx-auto p-3">
       <UCard shadow="sm" :ui="{ body: { padding: 'sm:p-6' } }">
         <DomainsImportCheckout :domains="domains"></DomainsImportCheckout>
-        <DomainsImportNameServer></DomainsImportNameServer>
+        <NameServer></NameServer>
       </UCard>
     </div>
   </Transition>

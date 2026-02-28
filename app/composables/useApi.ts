@@ -1,11 +1,6 @@
-import { useAppStore } from "~/stores/app";
-
 export const useApi = async (url: string, opts = {}) => {
   const config = useRuntimeConfig();
   const appStore = useAppStore();
-
-  console.log(config.public.apiUrl);
-  console.log(appStore.user);
 
   try {
     return await $fetch(url, {
@@ -17,10 +12,23 @@ export const useApi = async (url: string, opts = {}) => {
       },
       ...opts,
     });
-  } catch (error: any) {
-    if (error.status === 401) {
-      appStore.setUser(null);
-      navigateTo("/login");
+  } catch (err: any) {
+    const fetchError = err.data;
+
+    const errorMessage = fetchError?.message || err.message;
+    console.log("ERROR MESSAGE:", errorMessage);
+
+    // 3. Logic checks using the extracted message
+    if (errorMessage === "Invalid login credentials") {
+      throw err; // Re-throw so your login page can catch it and show a toast
     }
+
+    // 4. Handle Unauthorized
+    if (err.status === 401) {
+      appStore.setUser(null);
+      return navigateTo("/login");
+    }
+
+    throw err; // Always a good idea to throw the error if it wasn't handled above
   }
 };

@@ -7,7 +7,19 @@
     }"
   >
     <template #title>
-      <div>EXISTANTLY</div>
+      <div class="flex justify-center">
+        <img
+          src="/name.png"
+          alt="Existantly Logo"
+          class="h-10 w-auto dark:hidden"
+        />
+
+        <img
+          src="/name-white.png"
+          alt="Existantly Logo"
+          class="h-10 w-auto hidden dark:block"
+        />
+      </div>
     </template>
 
     <UNavigationMenu :items="items" />

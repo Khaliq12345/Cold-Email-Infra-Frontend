@@ -2,7 +2,7 @@
   <div>
     <CustomAuth :fields="fields" :schema="schema" :submit-function="onSubmit">
       <template #description>
-        Login to your account to manage your emails.
+        Enter your email to receive a password reset link.
       </template>
 
       <template #password-hint>
@@ -16,13 +16,13 @@
 
       <template #footer>
         <div class="text-center mt-4">
-          <p class="text-xs text-gray-400 dark:text-zinc-500">
-            By signing in, you agree to our
+          <p class="text-sm text-gray-500 dark:text-zinc-400">
+            Remember your password?
             <ULink
-              to="#"
-              class="text-primary-500 hover:text-primary-600 underline"
-              >Terms of Service</ULink
-            >.
+              to="/login"
+              class="text-primary-500 hover:text-primary-600 font-medium underline"
+              >Login</ULink
+            >
           </p>
         </div>
       </template>
@@ -34,7 +34,6 @@
 definePageMeta({ skipAuth: true, layout: false });
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
-import type { User } from "~/types/user";
 
 const toast = useToast();
 
@@ -43,47 +42,36 @@ const fields: AuthFormField[] = [
     name: "email",
     type: "email",
     label: "Email",
-    placeholder: "Enter your email",
-    required: true,
-  },
-  {
-    name: "password",
-    label: "Password",
-    type: "password",
-    placeholder: "Enter your password",
+    placeholder: "Enter your registered email",
     required: true,
   },
 ];
 
 const schema = z.object({
-  email: z.email("Invalid email"),
-  password: z
-    .string("Password is required")
-    .min(4, "Must be at least 8 characters"),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
   try {
-    const response = await useApi("/auth/login", {
+    // Using the useApi composable we optimized earlier
+    await useApi("/auth/forgot-password", {
       method: "POST",
-      body: { email: payload.data.email, password: payload.data.password },
+      body: { email: payload.data.email },
     });
+
     toast.add({
-      title: "Success",
-      description: "Login successful!",
+      title: "Email Sent",
+      description: "Check your inbox for reset instructions.",
       color: "success",
     });
-    const appStore = useAppStore();
-    console.log("login response: ", response);
-    appStore.setUser(response as User);
-    await navigateTo("/domains");
-  } catch (error) {
-    console.log("LOGIN ERROR ", error);
+  } catch (error: any) {
+    // error.data.message will be caught here thanks to our useApi logic
     toast.add({
-      title: "Error while login",
-      description: "Please check your credentials",
+      title: "Request Failed",
+      description:
+        error.data?.message || "Could not process request. Please try again.",
       color: "error",
     });
   }
