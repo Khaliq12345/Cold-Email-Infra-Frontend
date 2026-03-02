@@ -6,6 +6,7 @@
       <div class="p-2 bg-primary-50 dark:bg-primary-950 rounded-lg shrink-0">
         <UIcon name="i-heroicons-globe-alt" class="size-5 text-primary-600" />
       </div>
+
       <div class="flex flex-col min-w-0">
         <ULink
           :to="`/domains/${item.domain}`"
@@ -13,10 +14,22 @@
         >
           {{ item.domain }}
         </ULink>
-        <span class="text-xs text-gray-500 flex items-center gap-1">
-          <UIcon name="i-heroicons-user" class="size-3" />
-          {{ item.username }}
-        </span>
+
+        <div class="flex items-center gap-2 mt-0.5">
+          <span
+            class="text-xs text-primary-600 dark:text-primary-400 font-medium flex items-center gap-1"
+          >
+            <UIcon name="i-heroicons-envelope" class="size-3" />
+            {{ item.total_active_mailboxes }} Mailboxes
+          </span>
+
+          <span class="text-gray-300 dark:text-gray-700 text-xs">|</span>
+
+          <span class="text-xs text-gray-500 flex items-center gap-1">
+            <UIcon name="i-heroicons-user" class="size-3" />
+            {{ item.username }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -25,7 +38,6 @@
         class="text-[10px] font-bold text-gray-400 uppercase md:hidden w-full mb-1"
         >Status</span
       >
-
       <UBadge
         v-for="badge in getBadgeStatus(item)"
         :key="badge.label"
