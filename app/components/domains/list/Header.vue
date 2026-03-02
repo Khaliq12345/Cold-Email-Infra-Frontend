@@ -122,8 +122,6 @@ const loading = ref(false);
 const items = [
   { label: "Create Mailboxes", id: "create_mailboxes" },
   { label: "Export Mailboxes", id: "export_mailboxes" },
-  { label: "In Progress", id: "in_progress" },
-  { label: "Done", id: "done" },
 ];
 
 const bulkActions = async (actionType: string) => {
