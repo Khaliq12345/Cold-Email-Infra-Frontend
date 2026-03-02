@@ -56,7 +56,7 @@
 const props = defineProps<{
   open: boolean;
   totalMailboxes: number;
-  domain: string;
+  domains: string[];
 }>();
 
 const emit = defineEmits(["refresh", "update:open"]);
@@ -65,6 +65,7 @@ const firstName = ref("");
 const lastName = ref("");
 const mailboxesNumber = ref(1);
 const isLoading = ref(false);
+const toast = useToast();
 
 const handleAddMailboxes = async () => {
   isLoading.value = true;
@@ -72,7 +73,7 @@ const handleAddMailboxes = async () => {
     const response = await useApi(`/mailboxes/create`, {
       method: "POST",
       body: {
-        domain: props.domain,
+        domains: props.domains,
         firstName: firstName.value,
         lastName: lastName.value,
         total: mailboxesNumber.value,
@@ -85,10 +86,18 @@ const handleAddMailboxes = async () => {
     firstName.value = "";
     lastName.value = "";
     mailboxesNumber.value = 1;
-
+    toast.add({
+      title: "Mailboxes creation started",
+      color: "success",
+    });
     emit("refresh");
   } catch (error) {
     console.error("Failed to add mailboxes:", error);
+    toast.add({
+      title: "Error",
+      description: `Failed to add mailboxes: ${error}`,
+      color: "error",
+    });
   } finally {
     isLoading.value = false;
   }

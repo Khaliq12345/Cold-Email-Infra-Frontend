@@ -26,7 +26,7 @@
     <MailboxModal
       v-model:open="dialogState"
       :total-mailboxes="totalMailboxes"
-      :domain="domain"
+      :domains="[domain]"
       @refresh="$emit('refresh')"
     />
   </div>

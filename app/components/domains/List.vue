@@ -11,4 +11,7 @@
 
 <script lang="ts" setup>
 const refreshing = ref(0);
+
+const selectedDomains = ref([]);
+provide("selectedDomains", selectedDomains);
 </script>
