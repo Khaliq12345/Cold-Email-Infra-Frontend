@@ -89,12 +89,12 @@
         :items="items"
         class="w-full sm:w-44"
         placeholder="Bulk Actions"
-        @change="bulkActions(value)"
+        @update:modelValue="bulkActions(value)"
       />
       <MailboxModal
         v-model:open="dialogState"
-        :total-mailboxes="10"
-        :domains="[selectedDomains]"
+        :total-mailboxes="0"
+        :domains="selectedDomains"
         @refresh="
           () => {
             selectedDomains = [];
@@ -127,6 +127,7 @@ const items = [
 const bulkActions = async (actionType: string) => {
   switch (actionType) {
     case "create_mailboxes":
+      console.log(selectedDomains);
       dialogState.value = true;
       break; // 1. Added break to prevent falling into export logic
 

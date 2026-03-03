@@ -41,7 +41,7 @@
           <UButton
             @click="handleAddMailboxes"
             block
-            :disabled="!firstName || !lastName || !mailboxesNumber || isLoading"
+            :disabled="isLoading"
             :loading="isLoading"
           >
             {{ isLoading ? "Adding..." : "Add mailboxes" }}

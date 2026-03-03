@@ -1,5 +1,20 @@
 <template>
   <div v-if="domains.length > 0" class="w-full flex flex-col gap-4">
+    <!-- // Check all option -->
+    <div
+      class="px-4 py-2 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3"
+    >
+      <UCheckbox label="Select All Domains" v-model="isAllSelected" />
+
+      <span
+        v-if="selectedDomains.length > 0"
+        class="text-xs text-gray-500 font-medium"
+      >
+        {{ selectedDomains.length }} selected
+      </span>
+    </div>
+
+    <!-- // Listing with all the domains -->
     <UCheckboxGroup
       v-model="selectedDomains"
       :items="domains"
@@ -49,17 +64,46 @@ import type { DomainList } from "~/types/domain";
 
 const toast = useToast();
 const domains = ref<DomainList>([]);
-const selectedDomains = inject("selectedDomains");
+// Note: Ensure your provide/inject is using a ref/reactive array
+const selectedDomains = inject<Ref<string[]>>("selectedDomains", ref([]));
 
 // Pagination State
 const page = ref(1);
 const limit = ref(20);
 const totalDomains = ref(0);
 
+// --- IMPROVED SELECT ALL LOGIC ---
+
+// 1. Computed property to determine if "Select All" should be checked
+const isAllSelected = computed({
+  get() {
+    return (
+      domains.value.length > 0 &&
+      domains.value.every((d) => selectedDomains.value.includes(d.domain))
+    );
+  },
+  set(value: boolean) {
+    if (value) {
+      // Add only domains from the CURRENT page that aren't already selected
+      const currentIds = domains.value.map((d) => d.domain);
+      const newSelection = new Set([...selectedDomains.value, ...currentIds]);
+      selectedDomains.value = Array.from(newSelection);
+    } else {
+      // Remove only the domains on the CURRENT page
+      const currentIds = domains.value.map((d) => d.domain);
+      selectedDomains.value = selectedDomains.value.filter(
+        (id) => !currentIds.includes(id),
+      );
+    }
+  },
+});
+
+// Loading all domains
 async function getDomains() {
   try {
-    domains.value = [];
-    // Pass page and limit as query parameters to your API
+    // Optional: clear domains to show skeleton
+    // domains.value = [];
+
     const response = await useApi(`domains`, {
       query: {
         page: page.value,
@@ -67,8 +111,8 @@ async function getDomains() {
       },
     });
 
-    // Assuming your API returns { data: [], total: number }
-    if (response && typeof response === "object") {
+    if (response) {
+      // Adjust based on your actual API structure
       domains.value = (response.data || response) as DomainList;
       totalDomains.value = response.total || domains.value.length;
     }
@@ -76,7 +120,7 @@ async function getDomains() {
     toast.add({
       title: "Error",
       description: "An error occurred when getting domains",
-      color: "error",
+      color: "red", // 'error' is often 'red' in Nuxt UI
     });
   }
 }
@@ -86,7 +130,10 @@ watch([page, limit], () => {
   getDomains();
 });
 
-onMounted(async () => {
-  await getDomains();
+// No need for a watcher on selectedDomains anymore!
+// The computed 'isAllSelected' handles the UI state.
+
+onMounted(() => {
+  getDomains();
 });
 </script>
