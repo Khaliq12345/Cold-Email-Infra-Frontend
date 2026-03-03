@@ -37,7 +37,6 @@
         :y-axis="['total_count']"
         :x-num-ticks="5"
         :radius="4"
-        :x-grid-line="true"
         :x-formatter="xFormatter"
         :y-formatter="yFormatter"
         :orientation="Orientation.Horizontal"
