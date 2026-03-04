@@ -4,46 +4,137 @@
 @theme static {
   --font-sans: "Public Sans", sans-serif;
 
-  --color-green-50: #effdf5;
-  --color-green-100: #d9fbe8;
-  --color-green-200: #b3f5d1;
-  --color-green-300: #75edae;
-  --color-green-400: #00dc82;
-  --color-green-500: #00c16a;
-  --color-green-600: #00a155;
-  --color-green-700: #007f45;
-  --color-green-800: #016538;
-  --color-green-900: #0a5331;
-  --color-green-950: #052e16;
+  /* Primary - Blue */
+  --color-brand-50: #e6f4ff;
+  --color-brand-100: #cce9ff;
+  --color-brand-200: #99d3ff;
+  --color-brand-300: #66bdff;
+  --color-brand-400: #33a7ff;
+  --color-brand-500: #0091ff;
+  --color-brand-600: #0074cc;
+  --color-brand-700: #005799;
+  --color-brand-800: #003a66;
+  --color-brand-900: #001d33;
+  --color-brand-950: #000e1a;
 
-  /* monochrome colors */
-  --color-monoc-50: #e0e0e0;
-  --color-monoc-100: #cfcfcf;
-  --color-monoc-200: #b1b1b1;
-  --color-monoc-300: #8f8f8f;
-  --color-monoc-400: #6f6f6f;
-  --color-monoc-500: #545454;
-  --color-monoc-600: #3f3f3f;
-  --color-monoc-700: #2e2e2e;
-  --color-monoc-800: #1e1e1e;
-  --color-monoc-900: #121212;
-  --color-monoc-950: #080808;
+  /* Error - Red */
+  --color-danger-50: #fff0ee;
+  --color-danger-100: #ffd9d4;
+  --color-danger-200: #ffb3a9;
+  --color-danger-300: #ff8d7e;
+  --color-danger-400: #ff6753;
+  --color-danger-500: #ff2600;
+  --color-danger-600: #cc1e00;
+  --color-danger-700: #991700;
+  --color-danger-800: #660f00;
+  --color-danger-900: #330800;
+  --color-danger-950: #1a0400;
+
+  /* Success - Green */
+  --color-green-50: #eeffeb;
+  --color-green-100: #ccffc7;
+  --color-green-200: #99ff8f;
+  --color-green-300: #66ff57;
+  --color-green-400: #33ff1f;
+  --color-green-500: #2fff00;
+  --color-green-600: #26cc00;
+  --color-green-700: #1c9900;
+  --color-green-800: #136600;
+  --color-green-900: #093300;
+  --color-green-950: #041a00;
+
+  /* Neutral - Greys */
+  --color-mono-50: #f8f8f8;
+  --color-mono-100: #f0f0f0;
+  --color-mono-200: #e0e0e0;
+  --color-mono-300: #ababab;
+  --color-mono-400: #888888;
+  --color-mono-500: #666666;
+  --color-mono-600: #444444;
+  --color-mono-700: #333333;
+  --color-mono-800: #1f1f1f;
+  --color-mono-900: #111111;
+  --color-mono-950: #000000;
+}
+
+/* Remove the old :root and .dark blocks entirely and replace with this */
+
+:root,
+.light {
+  --ui-color-primary-50: var(--color-brand-50);
+  --ui-color-primary-100: var(--color-brand-100);
+  --ui-color-primary-200: var(--color-brand-200);
+  --ui-color-primary-300: var(--color-brand-300);
+  --ui-color-primary-400: var(--color-brand-400);
+  --ui-color-primary-500: var(--color-brand-500);
+  --ui-color-primary-600: var(--color-brand-600);
+  --ui-color-primary-700: var(--color-brand-700);
+  --ui-color-primary-800: var(--color-brand-800);
+  --ui-color-primary-900: var(--color-brand-900);
+  --ui-color-primary-950: var(--color-brand-950);
+}
+
+.dark {
+  --ui-color-primary-50: var(--color-brand-50);
+  --ui-color-primary-100: var(--color-brand-100);
+  --ui-color-primary-200: var(--color-brand-200);
+  --ui-color-primary-300: var(--color-brand-300);
+  --ui-color-primary-400: var(--color-brand-400);
+  --ui-color-primary-500: var(--color-brand-500);
+  --ui-color-primary-600: var(--color-brand-600);
+  --ui-color-primary-700: var(--color-brand-700);
+  --ui-color-primary-800: var(--color-brand-800);
+  --ui-color-primary-900: var(--color-brand-900);
+  --ui-color-primary-950: var(--color-brand-950);
+  background-color: #000000;
+}
+
+:root,
+.light {
+  --ui-color-success-50: var(--color-brand-50);
+  --ui-color-success-100: var(--color-brand-100);
+  --ui-color-success-200: var(--color-brand-200);
+  --ui-color-success-300: var(--color-brand-300);
+  --ui-color-success-400: var(--color-brand-400);
+  --ui-color-success-500: var(--color-brand-500);
+  --ui-color-success-600: var(--color-brand-600);
+  --ui-color-success-700: var(--color-brand-700);
+  --ui-color-success-800: var(--color-brand-800);
+  --ui-color-success-900: var(--color-brand-900);
+  --ui-color-success-950: var(--color-brand-950);
+}
+
+.dark {
+  --ui-color-success-50: var(--color-brand-50);
+  --ui-color-success-100: var(--color-brand-100);
+  --ui-color-success-200: var(--color-brand-200);
+  --ui-color-success-300: var(--color-brand-300);
+  --ui-color-success-400: var(--color-brand-400);
+  --ui-color-success-500: var(--color-brand-500);
+  --ui-color-success-600: var(--color-brand-600);
+  --ui-color-success-700: var(--color-brand-700);
+  --ui-color-success-800: var(--color-brand-800);
+  --ui-color-success-900: var(--color-brand-900);
+  --ui-color-success-950: var(--color-brand-950);
+}
+
+.dark body {
+  background-color: #000000;
 }
 
 :root {
-  --ui-primary: black;
-  --ui-bg: white;
+  --ui-bg: #ffffff;
+  --ui-bg-elevated: #f8f8f8;
+  --ui-bg-muted: #f0f0f0;
 }
-
-/* ... your existing @theme and :root ... */
 
 .dark {
-  --ui-primary: white;
-  --ui-bg: black;
-  background-color: black; /* Force the actual page background to black */
+  --ui-bg: #000000;
+  --ui-bg-elevated: #1f1f1f;
+  --ui-bg-muted: #1f1f1f;
+  background-color: #000000;
 }
 
-/* This ensures Nuxt UI components respect your black background */
 .dark body {
-  background-color: black;
+  background-color: #000000;
 }

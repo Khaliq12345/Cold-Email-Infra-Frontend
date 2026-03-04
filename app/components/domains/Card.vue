@@ -7,9 +7,9 @@
       />
     </template>
 
-    <template #default>
+    <!-- <template #default>
       <DomainsChartBody :domainStats="domainStats" :pending="pending" />
-    </template>
+    </template> -->
   </UCard>
 </template>
 
