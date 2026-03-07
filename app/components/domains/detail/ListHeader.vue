@@ -20,16 +20,13 @@
           {{ button.label }}
         </span>
       </UButton>
+      <DomainActions
+        :selectedDomains="[domain]"
+        title="Actions"
+      ></DomainActions>
     </div>
   </div>
-  <div>
-    <MailboxModal
-      v-model:open="dialogState"
-      :total-mailboxes="totalMailboxes"
-      :domains="[domain]"
-      @refresh="$emit('refresh')"
-    />
-  </div>
+  <div></div>
 </template>
 
 <script lang="ts" setup>
@@ -57,24 +54,6 @@ const toast = useToast();
 const dialogState = ref(false);
 
 const buttons = [
-  {
-    label: "Add mailboxes",
-    icon: "i-lucide-play",
-    color: "primary",
-    variant: "soft",
-    onClick: () => {
-      dialogState.value = true;
-    },
-  },
-  {
-    label: "Download",
-    icon: "i-lucide-download",
-    color: "primary",
-    variant: "soft",
-    onClick: () => {
-      emits("download");
-    },
-  },
   {
     label: "",
     icon: "i-lucide-trash",

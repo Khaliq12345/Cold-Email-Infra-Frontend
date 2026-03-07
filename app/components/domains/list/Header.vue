@@ -83,29 +83,15 @@
         @click="emit('refresh')"
       />
 
-      <USelectMenu
-        v-model="value"
-        value-key="id"
-        :items="items"
-        class="w-full sm:w-44"
-        placeholder="Bulk Actions"
-        @update:modelValue="bulkActions(value)"
-      />
-      <MailboxModal
-        v-model:open="dialogState"
-        :total-mailboxes="0"
-        :domains="selectedDomains"
+      <DomainActions
+        :selectedDomains="selectedDomains"
+        title="Bulk Actions"
         @refresh="
           () => {
             selectedDomains = [];
-            value = '';
           }
         "
-      />
-      <ExportMailboxesToPlusvibeModal
-        v-model="plusvibeDialogState"
-        :domains="selectedDomains"
-      ></ExportMailboxesToPlusvibeModal>
+      ></DomainActions>
     </div>
   </div>
 </template>

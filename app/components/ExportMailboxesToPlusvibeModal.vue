@@ -51,7 +51,7 @@
               color="primary"
               label="Go"
               :disabled="!workspaceId"
-              @click="plusvibeWorkspaceSelected"
+              @click="plusvibeWorkspaceSelected(workspaceId)"
               :loading="pending"
             />
           </div>
