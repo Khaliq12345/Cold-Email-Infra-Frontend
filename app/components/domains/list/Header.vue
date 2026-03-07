@@ -102,6 +102,10 @@
           }
         "
       />
+      <ExportMailboxesToPlusvibeModal
+        v-model="plusvibeDialogState"
+        :domains="selectedDomains"
+      ></ExportMailboxesToPlusvibeModal>
     </div>
   </div>
 </template>
@@ -113,6 +117,7 @@ const emit = defineEmits(["refresh"]);
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("sm"); // Logic to hide/show labels dynamically
 const dialogState = ref(false);
+const plusvibeDialogState = ref(false);
 const value = ref("");
 const selectedDomains = inject("selectedDomains");
 const mailboxes = ref([]);
@@ -121,17 +126,17 @@ const loading = ref(false);
 
 const items = [
   { label: "Create Mailboxes", id: "create_mailboxes" },
-  { label: "Export Mailboxes", id: "export_mailboxes" },
+  { label: "Export To CSV", id: "export_to_csv" },
+  { label: "Export To Plusvibe", id: "export_to_plusvibe" },
 ];
 
 const bulkActions = async (actionType: string) => {
   switch (actionType) {
     case "create_mailboxes":
-      console.log(selectedDomains);
       dialogState.value = true;
       break; // 1. Added break to prevent falling into export logic
 
-    case "export_mailboxes": {
+    case "export_to_csv": {
       // 2. CHECK: If no domains are selected, stop early
       if (!selectedDomains.value || selectedDomains.value.length === 0) {
         toast.add({
@@ -171,6 +176,11 @@ const bulkActions = async (actionType: string) => {
         loading.value = false;
         value.value = "";
       }
+      break;
+    }
+
+    case "export_to_plusvibe": {
+      plusvibeDialogState.value = true;
       break;
     }
   }
