@@ -72,11 +72,11 @@
       />
 
       <UInput
-        v-model="filters.minMailboxes"
+        v-model="filters.mailboxesCount"
         type="number"
         icon="i-heroicons-envelope"
-        placeholder="Min mailboxes"
-        class="w-32"
+        placeholder="Mailboxes Count"
+        class="w-48"
       />
 
       <USelectMenu
@@ -102,7 +102,6 @@
       />
 
       <UButton
-        v-if="hasActiveFilters"
         label="Submit"
         variant="ghost"
         color="primary"
@@ -110,7 +109,6 @@
         @click="applyFilters"
       />
       <UButton
-        v-if="hasActiveFilters"
         label="Clear"
         variant="ghost"
         color="red"
@@ -151,7 +149,7 @@ const loading = ref(false);
 // Filter State
 const filters = reactive({
   domain: "",
-  minMailboxes: null as number | null,
+  mailboxesCount: null as number | null,
   hasPlusvibe: undefined as boolean | undefined,
   order: undefined as boolean | undefined,
 });
@@ -164,17 +162,8 @@ const applyFilters = () => {
 
 const clearFilters = () => {
   filters.domain = "";
-  filters.minMailboxes = null;
+  filters.mailboxesCount = null;
   filters.hasPlusvibe = undefined;
   applyFilters();
 };
-
-const hasActiveFilters = computed(() => {
-  return (
-    filters.domain !== "" ||
-    filters.minMailboxes !== null ||
-    filters.hasPlusvibe !== undefined ||
-    filters.order !== undefined
-  );
-});
 </script>

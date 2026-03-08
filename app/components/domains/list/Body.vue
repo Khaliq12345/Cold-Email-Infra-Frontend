@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <DomainsListSkeleton v-else />
+  <UEmpty v-else icon="i-heroicons-no-symbol" title="No domains found" />
 </template>
 
 <script lang="ts" setup>
