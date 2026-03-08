@@ -49,8 +49,9 @@ const pending = ref(false);
 const filters = reactive({
   domain: "",
   mailboxesCount: null as number | null,
-  hasPlusvibe: undefined as boolean | undefined,
+  platform: undefined as string | undefined,
   order: "desc" as "asc" | "desc" | undefined, // Changed to string for clearer API sorting
+  exportStatus: "SENDING" as "SENDING" | "IDLE" | undefined,
 });
 
 provide("selectedDomains", selectedDomains);
@@ -68,8 +69,9 @@ async function getDomains() {
         limit: limit.value,
         domain: filters.domain || undefined,
         mailboxesCount: filters.mailboxesCount || undefined,
-        hasPlusvibe: filters.hasPlusvibe,
+        platform: filters.platform,
         order: filters.order,
+        exportStatus: filters.exportStatus,
       },
     });
 
@@ -94,7 +96,6 @@ watch(
   [page, limit, () => ({ ...filters })],
   () => {
     // Reset to page 1 when filters change (optional but recommended)
-    // if (page.value !== 1) page.value = 1;
     getDomains();
   },
   { deep: true },

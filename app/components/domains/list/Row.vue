@@ -23,7 +23,10 @@
 
           <span class="text-gray-300 dark:text-gray-700 text-xs">|</span>
 
-          <span class="text-xs text-gray-500 flex items-center gap-1">
+          <span
+            class="text-xs text-gray-500 flex items-center gap-1"
+            v-show="item.plusvibe_workspace"
+          >
             <UButton
               :avatar="{
                 src: '/plusvibe.png',
