@@ -1,16 +1,121 @@
 <template>
-  <div
-    class="relative w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4"
-  >
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-bold truncate">Domains</h2>
+  <div class="flex flex-col gap-4">
+    <div
+      class="relative w-full flex flex-col sm:flex-row sm:items-center justify-between"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold truncate">Domains</h2>
+        <UButton
+          variant="ghost"
+          color="gray"
+          icon="i-heroicons-arrow-path"
+          class="sm:hidden rounded-full"
+          @click="emit('refresh')"
+        />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <UModal
+          :ui="{
+            width: 'w-full sm:max-w-lg md:max-w-xl',
+            container: 'flex items-center justify-center p-4',
+          }"
+        >
+          <UButton
+            icon="i-heroicons-server-stack"
+            :label="isMobile ? '' : 'NS Setup'"
+            color="gray"
+            variant="outline"
+            class="shrink-0"
+          />
+          <template #content>
+            <div class="p-4 sm:p-8 overflow-y-auto max-h-[90vh]">
+              <div class="mb-4 md:mb-6">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                  Configuration Instructions
+                </h3>
+              </div>
+              <NameServer />
+            </div>
+          </template>
+        </UModal>
+
+        <UButton
+          variant="ghost"
+          color="gray"
+          icon="i-heroicons-arrow-path"
+          size="md"
+          class="hidden sm:flex rounded-full px-2"
+          @click="emit('refresh')"
+        />
+
+        <DomainActions
+          :selectedDomains="selectedDomains"
+          title="Bulk Actions"
+          @refresh="
+            () => {
+              selectedDomains = [];
+            }
+          "
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex flex-wrap items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-800"
+    >
+      <UInput
+        v-model="filters.domain"
+        icon="i-heroicons-magnifying-glass"
+        placeholder="Filter by domain..."
+        class="w-full sm:w-64"
+      />
+
+      <UInput
+        v-model="filters.minMailboxes"
+        type="number"
+        icon="i-heroicons-envelope"
+        placeholder="Min mailboxes"
+        class="w-32"
+      />
+
+      <USelectMenu
+        v-model="filters.hasPlusvibe"
+        placeholder="PlusVibe Status"
+        :items="[
+          { label: 'All Status', value: undefined },
+          { label: 'Synced to PlusVibe', value: true },
+        ]"
+        value-key="value"
+        class="w-48"
+      />
+      <USelectMenu
+        v-model="filters.order"
+        placeholder="Order by"
+        :items="[
+          { label: 'Newest', value: 'desc' },
+          { label: 'Oldest', value: 'asc' },
+        ]"
+        value-key="value"
+        class="w-48"
+        @change="applyFilters"
+      />
 
       <UButton
+        v-if="hasActiveFilters"
+        label="Submit"
         variant="ghost"
-        color="gray"
-        icon="i-heroicons-arrow-path"
-        class="sm:hidden rounded-full"
-        @click="emit('refresh')"
+        color="primary"
+        icon="i-heroicons-funnel"
+        @click="applyFilters"
+      />
+      <UButton
+        v-if="hasActiveFilters"
+        label="Clear"
+        variant="ghost"
+        color="red"
+        icon="i-heroicons-x-mark"
+        @click="clearFilters"
       />
     </div>
 
@@ -28,147 +133,48 @@
         >
       </div>
     </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <UButton
-        to="/domains/import"
-        :variant="isMobile ? 'ghost' : 'outline'"
-        color="gray"
-        icon="i-lucide-import"
-        :label="isMobile ? '' : 'Import'"
-        class="shrink-0"
-      />
-
-      <UButton
-        to="/registrar/register"
-        target="_blank"
-        color="black"
-        icon="i-heroicons-credit-card"
-        :label="isMobile ? '' : 'Purchase'"
-        class="shrink-0"
-      />
-
-      <UModal
-        :ui="{
-          width: 'w-full sm:max-w-lg md:max-w-xl',
-          container: 'flex items-center justify-center p-4',
-        }"
-      >
-        <UButton
-          icon="i-heroicons-server-stack"
-          :label="isMobile ? '' : 'NS Setup'"
-          color="gray"
-          variant="outline"
-          class="shrink-0"
-        />
-
-        <template #content>
-          <div class="p-4 sm:p-8 overflow-y-auto max-h-[90vh]">
-            <div class="mb-4 md:mb-6">
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                Configuration Instructions
-              </h3>
-            </div>
-            <NameServer />
-          </div>
-        </template>
-      </UModal>
-
-      <UButton
-        variant="ghost"
-        color="gray"
-        icon="i-heroicons-arrow-path"
-        size="md"
-        class="hidden sm:flex rounded-full px-2"
-        @click="emit('refresh')"
-      />
-
-      <DomainActions
-        :selectedDomains="selectedDomains"
-        title="Bulk Actions"
-        @refresh="
-          () => {
-            selectedDomains = [];
-          }
-        "
-      ></DomainActions>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useBreakpoints, breakpointsTailwind } from "@vueuse/core";
 
-const emit = defineEmits(["refresh"]);
+const emit = defineEmits(["refresh", "filter"]);
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("sm"); // Logic to hide/show labels dynamically
 const dialogState = ref(false);
 const plusvibeDialogState = ref(false);
 const value = ref("");
 const selectedDomains = inject("selectedDomains");
-const mailboxes = ref([]);
-const toast = useToast();
 const loading = ref(false);
 
-const items = [
-  { label: "Create Mailboxes", id: "create_mailboxes" },
-  { label: "Export To CSV", id: "export_to_csv" },
-  { label: "Export To Plusvibe", id: "export_to_plusvibe" },
-];
+// Filter State
+const filters = reactive({
+  domain: "",
+  minMailboxes: null as number | null,
+  hasPlusvibe: undefined as boolean | undefined,
+  order: undefined as boolean | undefined,
+});
 
-const bulkActions = async (actionType: string) => {
-  switch (actionType) {
-    case "create_mailboxes":
-      dialogState.value = true;
-      break; // 1. Added break to prevent falling into export logic
-
-    case "export_to_csv": {
-      // 2. CHECK: If no domains are selected, stop early
-      if (!selectedDomains.value || selectedDomains.value.length === 0) {
-        toast.add({
-          title: "Please select at least one domain",
-          color: "orange",
-        });
-        value.value = ""; // Reset dropdown
-        return;
-      }
-
-      loading.value = true;
-      const allMailboxes = [];
-
-      try {
-        for (const domain of selectedDomains.value) {
-          try {
-            const response = await useApi(`/mailboxes/${domain}`);
-            if (Array.isArray(response)) {
-              allMailboxes.push(...response);
-            }
-          } catch (error) {
-            console.error(`Failed to fetch mailboxes for ${domain}:`, error);
-          }
-        }
-
-        if (allMailboxes.length > 0) {
-          mailboxes.value = allMailboxes;
-          await downloadMailboxes(allMailboxes);
-
-          // 4. OPTIONAL: Clear selection only AFTER successful export
-          selectedDomains.value = [];
-        } else {
-          toast.add({ title: "No mailboxes found to export", color: "orange" });
-        }
-      } finally {
-        // 5. Cleanup
-        loading.value = false;
-        value.value = "";
-      }
-      break;
-    }
-
-    case "export_to_plusvibe": {
-      plusvibeDialogState.value = true;
-      break;
-    }
-  }
+// Helper functions for the filters
+const applyFilters = () => {
+  // Emit the filter object to the parent component
+  emit("filter", { ...filters });
 };
+
+const clearFilters = () => {
+  filters.domain = "";
+  filters.minMailboxes = null;
+  filters.hasPlusvibe = undefined;
+  applyFilters();
+};
+
+const hasActiveFilters = computed(() => {
+  return (
+    filters.domain !== "" ||
+    filters.minMailboxes !== null ||
+    filters.hasPlusvibe !== undefined ||
+    filters.order !== undefined
+  );
+});
 </script>

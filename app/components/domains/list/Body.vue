@@ -62,15 +62,14 @@
 <script lang="ts" setup>
 import type { DomainList } from "~/types/domain";
 
-const toast = useToast();
-const domains = ref<DomainList>([]);
+const domains = defineModel<DomainList>("domains");
 // Note: Ensure your provide/inject is using a ref/reactive array
 const selectedDomains = inject<Ref<string[]>>("selectedDomains", ref([]));
 
 // Pagination State
-const page = ref(1);
-const limit = ref(20);
-const totalDomains = ref(0);
+const page = defineModel("page");
+const limit = defineModel("limit");
+const totalDomains = defineModel("totalDomains");
 
 // --- IMPROVED SELECT ALL LOGIC ---
 
@@ -96,44 +95,5 @@ const isAllSelected = computed({
       );
     }
   },
-});
-
-// Loading all domains
-async function getDomains() {
-  try {
-    // Optional: clear domains to show skeleton
-    // domains.value = [];
-
-    const response = await useApi(`domains`, {
-      query: {
-        page: page.value,
-        limit: limit.value,
-      },
-    });
-
-    if (response) {
-      // Adjust based on your actual API structure
-      domains.value = (response.data || response) as DomainList;
-      totalDomains.value = response.total || domains.value.length;
-    }
-  } catch (error) {
-    toast.add({
-      title: "Error",
-      description: "An error occurred when getting domains",
-      color: "red", // 'error' is often 'red' in Nuxt UI
-    });
-  }
-}
-
-// Watch for changes in page or limit to refetch data
-watch([page, limit], () => {
-  getDomains();
-});
-
-// No need for a watcher on selectedDomains anymore!
-// The computed 'isAllSelected' handles the UI state.
-
-onMounted(() => {
-  getDomains();
 });
 </script>
