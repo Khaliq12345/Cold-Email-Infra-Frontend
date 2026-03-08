@@ -55,7 +55,7 @@
         :key="badge.label"
         variant="subtle"
         size="md"
-        :color="'primary'"
+        :color="badge.active ? 'primary' : 'error'"
         :icon="
           !badge.active ? 'i-heroicons-x-circle' : 'i-heroicons-check-circle'
         "
