@@ -32,7 +32,10 @@
               size="sm"
               color="neutral"
               variant="outline"
-              :loading="item.plusvibe_sync_status != 'IDLE'"
+              :loading="
+                item.plusvibe_sync_status !== 'IDLE' &&
+                !!item.plusvibe_sync_status
+              "
             >
               Plusvibe
             </UButton>
