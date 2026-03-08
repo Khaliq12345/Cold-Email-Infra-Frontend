@@ -90,6 +90,7 @@
             :items="[
               { label: 'All', value: undefined },
               { label: 'PlusVibe', value: 'plusvibe' },
+              { label: 'No Platform', value: 'no_platform' },
             ]"
             value-key="value"
             class="w-full xs:w-40 sm:w-36"
@@ -183,7 +184,6 @@ const applyFilters = () => {
 const clearFilters = () => {
   filters.domain = "";
   filters.mailboxesCount = null;
-  filters.hasPlusvibe = undefined;
   filters.exportStatus = undefined;
   filters.platform = undefined;
   applyFilters();

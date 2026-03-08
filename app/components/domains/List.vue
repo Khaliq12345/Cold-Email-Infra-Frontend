@@ -51,7 +51,7 @@ const filters = reactive({
   mailboxesCount: null as number | null,
   platform: undefined as string | undefined,
   order: "desc" as "asc" | "desc" | undefined, // Changed to string for clearer API sorting
-  exportStatus: "SENDING" as "SENDING" | "IDLE" | undefined,
+  exportStatus: undefined as "SENDING" | "IDLE" | undefined,
 });
 
 provide("selectedDomains", selectedDomains);
